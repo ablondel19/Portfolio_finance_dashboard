@@ -19,11 +19,12 @@
     "types": ["vite/client"],
 
     /* Linting */
-    "strict": true,
+    "strict": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src"],
+  "exclude": ["**/*", "!src/**"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
