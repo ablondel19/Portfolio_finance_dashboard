@@ -3,6 +3,6 @@ import { getKpis } from "../controllers/kpi.ts";
 
 const router = Router();
 
-router.get("/kpi", getKpis);
+router.get("/kpis", getKpis);
 
 export default router;

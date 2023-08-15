@@ -18,19 +18,20 @@ app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("common"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors({ origin: "http://localhost:5173/" }));
+app.use(cors({ origin: "http://localhost:5173" }));
 
 /* ROUTES */
 app.use("/kpi", kpiRoutes);
 
-/* MONGOOSE SETUP + SERVER START + MOCK DATA INSERT */
+/* MONGOOSE SETUP + SERVER START */
 const PORT = process.env.PORT || 3001;
 const MONGO_URL = process.env.MONGO_URL || "";
 mongoose
   .connect(MONGO_URL)
   .then(async () => {
     app.listen(PORT, () => console.log(`🚀 ~ App: Ready on port ${PORT}`));
-    // USE ONCE ONLY
+    // MOCK DATA INSERT => USE ONCE ONLY
+    // await mongoose.connection.db.dropDatabase();
     // await kpiModel.insertMany(kpis);
   })
   .catch((error) => {
