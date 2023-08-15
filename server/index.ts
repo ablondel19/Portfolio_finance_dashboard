@@ -6,8 +6,11 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import cors from "cors";
 import kpiRoutes from "./routes/kpi.ts";
+import productsRoutes from "./routes/products.ts";
 import kpiModel from "./models/kpiModel.ts";
-import { kpis } from "./data/data.ts";
+import productModel from "./models/productModel.ts";
+import transactionModel from "./models/transactionModel.ts";
+import { kpis, products, transactions } from "./data/data.ts";
 
 /* CONFIGURATION */
 dotenv.config();
@@ -22,6 +25,7 @@ app.use(cors({ origin: "http://localhost:5173" }));
 
 /* ROUTES */
 app.use("/kpi", kpiRoutes);
+app.use("/products", productsRoutes);
 
 /* MONGOOSE SETUP + SERVER START */
 const PORT = process.env.PORT || 3001;
@@ -33,6 +37,8 @@ mongoose
     // MOCK DATA INSERT => USE ONCE ONLY
     // await mongoose.connection.db.dropDatabase();
     // await kpiModel.insertMany(kpis);
+    // await productModel.insertMany(products);
+    // await transactionModel.insertMany(transactions);
   })
   .catch((error) => {
     console.log("~ Mongoose ~ error :", error);

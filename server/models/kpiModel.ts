@@ -1,19 +1,5 @@
 import mongoose from "mongoose";
-
-function toCurrencyValue(value: string) {
-  const parsedValue = parseFloat(value.replace("$", "")) * 100;
-  return Math.round(parsedValue);
-}
-
-function fromCurrencyValue(value: number) {
-  return (value / 100).toFixed(2);
-}
-
-const Currency = {
-  type: Number,
-  set: toCurrencyValue,
-  get: fromCurrencyValue,
-};
+import { Currency } from "../utils/utils.ts";
 
 const monthlyDataSchema = new mongoose.Schema(
   {
