@@ -3,11 +3,13 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 export interface StatisticsState {
   yearlyRevenueDiff: string;
   yearlyExpensesDiff: string;
+  yearlyProfitDiff: string;
 }
 
 const initialState: StatisticsState = {
   yearlyRevenueDiff: "",
   yearlyExpensesDiff: "",
+  yearlyProfitDiff: "",
 };
 
 const calculateTrend = (oldValue: number, newValue: number) => {

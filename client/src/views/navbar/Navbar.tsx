@@ -16,7 +16,7 @@ const Navbar = () => {
       </FlexBetween>
 
       {/* RIGHT SIDE => LINKS */}
-      <FlexBetween gap="2rem">
+      <FlexBetween gap=".5rem">
         <Box sx={{ "&:hover": { color: palette.primary[100] } }}>
           <Link
             to="/"
