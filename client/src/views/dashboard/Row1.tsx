@@ -98,8 +98,6 @@ const Row1 = () => {
 
         <ResponsiveContainer width="99%" height="100%">
           <AreaChart
-            width={500}
-            height={400}
             data={revenueAndExpenses}
             margin={{
               top: 15,

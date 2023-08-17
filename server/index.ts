@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import kpiRoutes from "./routes/kpi.ts";
 import productsRoutes from "./routes/products.ts";
+import transactionsRoutes from "./routes/transactions.ts";
 import kpiModel from "./models/kpiModel.ts";
 import productModel from "./models/productModel.ts";
 import transactionModel from "./models/transactionModel.ts";
@@ -26,6 +27,7 @@ app.use(cors({ origin: "http://localhost:5173" }));
 /* ROUTES */
 app.use("/kpi", kpiRoutes);
 app.use("/products", productsRoutes);
+app.use("/transactions", transactionsRoutes);
 
 /* MONGOOSE SETUP + SERVER START */
 const PORT = process.env.PORT || 3001;

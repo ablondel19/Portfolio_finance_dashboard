@@ -20,7 +20,7 @@ const BoxHeader = ({ icon, title, subtitle, sidetext }: Props) => {
             <Typography variant="h4" mb="-0.1rem">
               {title}
             </Typography>
-            {/* <Typography variant="h6">{subtitle}</Typography> */}
+            <Typography variant="h6">{subtitle}</Typography>
           </Box>
         </FlexBetween>
         <FlexBetween>

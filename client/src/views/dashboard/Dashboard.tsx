@@ -54,7 +54,7 @@ const Dashboard = () => {
   return (
     <Box
       width="100%"
-      height="100%"
+      height="95%"
       display="grid"
       gap="1rem"
       sx={
@@ -74,6 +74,7 @@ const Dashboard = () => {
       <Row1 />
       <Row2 />
       <Row3 />
+      <Box height="1rem"></Box>
     </Box>
   );
 };
