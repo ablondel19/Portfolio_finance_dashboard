@@ -8,6 +8,11 @@ const monthlyDataSchema = new mongoose.Schema(
     expenses: Currency,
     operationalExpenses: Currency,
     nonOperationalExpenses: Currency,
+    salaries: Currency,
+    supplies: Currency,
+    marketing: Currency,
+    events: Currency,
+    other: Currency,
   },
   { toJSON: { getters: true } }
 );
@@ -32,6 +37,13 @@ const kpiSchema = new mongoose.Schema(
     },
     monthlyData: [monthlyDataSchema],
     dailyData: [dailyDataSchema],
+    ranges: {
+      revenue: { min: Number, max: Number },
+      expenses: { min: Number, max: Number },
+      profit: { min: Number, max: Number },
+      opExp: { min: Number, max: Number },
+      nonOpExp: { min: Number, max: Number },
+    },
   },
   { timestamps: true, toJSON: { getters: true } }
 );

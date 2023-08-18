@@ -7,46 +7,24 @@ const gridTemplateLargeScreens = `
   "a b c"
   "a b c"
   "a b c"
-  "a b f"
   "d e f"
   "d e f"
-  "d h i"
+  "d e f"
   "g h i"
-  "g h j"
-  "g h j"
+  "g h i"
+  "g h i"
 `;
 
 const gridTemplateSmallScreens = `
   "a"
-  "a"
-  "a"
-  "a"
-  "b"
-  "b"
-  "b"
   "b"
   "c"
-  "c"
-  "c"
-  "d"
-  "d"
   "d"
   "e"
-  "e"
-  "f"
-  "f"
   "f"
   "g"
-  "g"
-  "g"
-  "h"
-  "h"
-  "h"
   "h"
   "i"
-  "i"
-  "j"
-  "j"
 `;
 
 const Dashboard = () => {
@@ -60,13 +38,13 @@ const Dashboard = () => {
       sx={
         isAboveMediumScreens
           ? {
-              gridTemplateColumns: "repeat(3, minmax(370px, 1fr))",
-              gridTemplateRows: "repeat(10, minmax(40px, 1fr))",
+              gridTemplateColumns: "repeat(3, minmax(auto, 1fr))",
+              gridTemplateRows: "repeat(9, minmax(40px, 1fr))",
               gridTemplateAreas: gridTemplateLargeScreens,
             }
           : {
               gridAutoColumns: "1fr",
-              gridAutoRows: "75px",
+              gridAutoRows: "300px",
               gridTemplateAreas: gridTemplateSmallScreens,
             }
       }

@@ -11,7 +11,8 @@ import transactionsRoutes from "./routes/transactions.ts";
 import kpiModel from "./models/kpiModel.ts";
 import productModel from "./models/productModel.ts";
 import transactionModel from "./models/transactionModel.ts";
-import { kpis, products, transactions } from "./data/data.ts";
+import { products, transactions } from "./data/data.ts";
+import kpis from "./datagen.ts";
 
 /* CONFIGURATION */
 dotenv.config();
@@ -37,7 +38,6 @@ mongoose
   .then(async () => {
     app.listen(PORT, () => console.log(`🚀 ~ App: Ready on port ${PORT}`));
     // MOCK DATA INSERT => USE ONCE ONLY
-    // await mongoose.connection.db.dropDatabase();
     // await kpiModel.insertMany(kpis);
     // await productModel.insertMany(products);
     // await transactionModel.insertMany(transactions);

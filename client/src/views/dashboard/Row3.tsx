@@ -140,12 +140,6 @@ const Row3 = () => {
           subtitle={`Replace with a bar of total expenses`}
         ></BoxHeader>
       </DashboardBox>
-      <DashboardBox gridArea="j">
-        <BoxHeader
-          title="THIS COMPONENT HAS TO GO AWAY"
-          subtitle={``}
-        ></BoxHeader>
-      </DashboardBox>
     </>
   );
 };

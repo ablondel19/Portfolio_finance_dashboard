@@ -11,6 +11,6 @@
     "noEmit": true,
     "allowImportingTsExtensions": true
   },
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts", "datagen.ts"],
   "exclude": ["node_modules"]
 }
