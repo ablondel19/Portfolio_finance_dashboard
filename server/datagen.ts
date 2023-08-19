@@ -16,7 +16,7 @@ const genUser = (role: string) => {
   };
 };
 
-const today = new Date();
+const today = new Date("2022-01-01");
 const lastYear = new Date(
   today.getFullYear() - 1,
   today.getMonth(),
@@ -25,22 +25,21 @@ const lastYear = new Date(
 
 const genDailyData = () => {
   const start = new Date(lastYear);
-  const end = today;
+  const end = new Date("2022-12-31");
   const dailyData = [];
+  let i = 0;
 
   while (start <= end) {
     const date = start.toISOString().split("T")[0];
-    const dayIndex = Math.floor(
-      (start.getTime() - lastYear.getTime()) / (24 * 60 * 60 * 1000)
-    );
     const revenue = `$${parseFloat(
-      faker.commerce.price({ min: 100 + dayIndex, max: 1000 + dayIndex })
+      faker.commerce.price({ min: 350 + i, max: 1150 + i })
     )}`;
     const expenses = `$${parseFloat(
-      faker.commerce.price({ min: 50 + dayIndex, max: 500 + dayIndex })
+      faker.commerce.price({ min: 250 + i, max: 400 + i })
     )}`;
     dailyData.push({ date, revenue, expenses });
     start.setDate(start.getDate() + 1);
+    i++;
   }
   return dailyData;
 };
@@ -86,6 +85,20 @@ for (let year = lastYear.getFullYear(); year <= today.getFullYear(); year++) {
         },
         { revenue: 0, expenses: 0 }
       );
+    let r1 = "";
+    let r2 = "";
+
+    while (true) {
+      r1 = Math.random().toFixed(1);
+      r2 = Math.random().toFixed(1);
+      if (r1 !== "0.0" && r2 !== "0.0") {
+        if (
+          parseFloat(r1) > parseFloat(r2) &&
+          parseFloat(r1) + parseFloat(r2) === 1
+        )
+          break;
+      }
+    }
 
     monthlyData.push({
       month: monthName,
@@ -96,9 +109,9 @@ for (let year = lastYear.getFullYear(); year <= today.getFullYear(); year++) {
         monthlyRevenueAndExpenses.revenue - monthlyRevenueAndExpenses.expenses
       ).toFixed(2)}`,
       operationalExpenses:
-        "$" + (monthlyRevenueAndExpenses.expenses * 0.67).toFixed(2),
+        "$" + (monthlyRevenueAndExpenses.expenses * parseFloat(r1)).toFixed(2),
       nonOperationalExpenses:
-        "$" + (monthlyRevenueAndExpenses.expenses * 0.33).toFixed(2),
+        "$" + (monthlyRevenueAndExpenses.expenses * parseFloat(r2)).toFixed(2),
       salaries: "",
       supplies: "",
       marketing: "",
@@ -156,11 +169,11 @@ const kpiData = monthlyData.reduce(
 );
 
 function roundUp(value: number) {
-  return Math.ceil(value / 1000) * 1000;
+  return Math.ceil(value / 1000) * 1000 + 1000;
 }
 
 function roundDown(value: number) {
-  return Math.floor(value / 1000) * 1000;
+  return Math.floor(value / 1000) * 1000 - 1000;
 }
 
 const format = (value: string) => {

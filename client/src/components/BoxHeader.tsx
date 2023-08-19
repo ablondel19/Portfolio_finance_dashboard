@@ -13,7 +13,7 @@ const BoxHeader = ({ icon, title, subtitle, sidetext }: Props) => {
   const { palette } = useTheme();
   return (
     <>
-      <FlexBetween color={palette.grey[400]} margin="1.5rem 1rem 0rem 1rem">
+      <FlexBetween color={palette.grey[400]} margin="1rem 1rem 0rem 1rem">
         <FlexBetween>
           {icon}
           <Box width="100%">

@@ -38,9 +38,10 @@ mongoose
   .then(async () => {
     app.listen(PORT, () => console.log(`🚀 ~ App: Ready on port ${PORT}`));
     // MOCK DATA INSERT => USE ONCE ONLY
-    // await kpiModel.insertMany(kpis);
     // await productModel.insertMany(products);
     // await transactionModel.insertMany(transactions);
+    await kpiModel.deleteMany({});
+    await kpiModel.insertMany(kpis);
   })
   .catch((error) => {
     console.log("~ Mongoose ~ error :", error);

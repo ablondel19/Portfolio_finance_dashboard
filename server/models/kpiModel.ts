@@ -5,6 +5,7 @@ const monthlyDataSchema = new mongoose.Schema(
   {
     month: String,
     revenue: Currency,
+    profit: Currency,
     expenses: Currency,
     operationalExpenses: Currency,
     nonOperationalExpenses: Currency,
