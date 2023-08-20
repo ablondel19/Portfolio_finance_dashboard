@@ -15,35 +15,33 @@ import Spinner from "./Spinner";
 import { LayoutState } from "@/main";
 import { useSelector } from "react-redux";
 
-const ExpensesLineChart = ({ gridArea }) => {
+const ProfitAndRevenueLineChart = ({ gridArea }) => {
   const { palette } = useTheme();
   const { data, isLoading } = useGetKpisQuery();
 
-  const operationalExpenses = useMemo(() => {
+  const revenueAndProfit = useMemo(() => {
     return (
       data !== undefined &&
-      data[0].monthlyData.map(
-        ({ month, nonOperationalExpenses, operationalExpenses }) => {
-          return {
-            name: month.substring(0, 3),
-            "Non operational expenses": nonOperationalExpenses,
-            "Operational expenses": operationalExpenses,
-          };
-        }
-      )
+      data[0].monthlyData.map(({ month, revenue, expenses }) => {
+        return {
+          name: month.substring(0, 3),
+          revenue: revenue,
+          profit: (revenue - expenses).toFixed(2),
+        };
+      })
     );
   }, [data]);
 
   if (isLoading) return <Spinner />;
-  const minLeft = data[0].ranges.nonOpExp.min;
-  const maxLeft = data[0].ranges.nonOpExp.max;
-  const minRight = data[0].ranges.opExp.min;
-  const maxRight = data[0].ranges.opExp.max;
+  const minLeft = data[0].ranges.profit.min;
+  const maxLeft = data[0].ranges.profit.max;
+  const minRight = data[0].ranges.revenue.min;
+  const maxRight = data[0].ranges.revenue.max;
 
   return (
     <ResponsiveContainer width="99%" height="100%">
       <LineChart
-        data={operationalExpenses}
+        data={revenueAndProfit}
         margin={{
           top: 30,
           right: -10,
@@ -55,7 +53,6 @@ const ExpensesLineChart = ({ gridArea }) => {
         <XAxis dataKey="name" tickLine={false} style={{ fontSize: ".7em" }} />
         <YAxis
           yAxisId="left"
-          orientation="left"
           tickLine={false}
           axisLine={false}
           style={{ fontSize: ".6em" }}
@@ -66,8 +63,8 @@ const ExpensesLineChart = ({ gridArea }) => {
           orientation="right"
           tickLine={false}
           axisLine={false}
-          style={{ fontSize: ".6em" }}
           domain={[minRight, maxRight]}
+          style={{ fontSize: ".6em" }}
         />
         <Tooltip
           labelStyle={{
@@ -82,20 +79,22 @@ const ExpensesLineChart = ({ gridArea }) => {
         <Legend
           verticalAlign="bottom"
           wrapperStyle={{
+            alignItems: "left",
             fontSize: "0.7em",
             bottom: "45px",
+            left: "-10px",
           }}
         ></Legend>
         <Line
           yAxisId="left"
           type="monotone"
-          dataKey="Non operational expenses"
+          dataKey="profit"
           stroke={palette.tertiary[500]}
         />
         <Line
           yAxisId="right"
           type="monotone"
-          dataKey="Operational expenses"
+          dataKey="revenue"
           stroke={palette.primary.main}
         />
       </LineChart>
@@ -103,4 +102,4 @@ const ExpensesLineChart = ({ gridArea }) => {
   );
 };
 
-export default ExpensesLineChart;
+export default ProfitAndRevenueLineChart;

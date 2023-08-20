@@ -1,46 +1,47 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-export interface StatisticsState {
-  yearlyRevenueDiff: string;
-  yearlyExpensesDiff: string;
-  yearlyProfitDiff: string;
+export interface layoutState {
+  a: boolean;
+  b: boolean;
+  c: boolean;
+  d: boolean;
+  e: boolean;
+  f: boolean;
+  g: boolean;
+  h: boolean;
+  i: boolean;
 }
 
-const initialState: StatisticsState = {
-  yearlyRevenueDiff: "",
-  yearlyExpensesDiff: "",
-  yearlyProfitDiff: "",
+const initialState: layoutState = {
+  a: true,
+  b: true,
+  c: true,
+  d: true,
+  e: true,
+  f: true,
+  g: true,
+  h: true,
+  i: true,
 };
 
-const calculateTrend = (oldValue: number, newValue: number) => {
-  return (((newValue - oldValue) / oldValue) * 100).toFixed(2);
-};
-
-export const StatisticsSlice = createSlice({
-  name: "statistics",
+export const layoutSlice = createSlice({
+  name: "layout",
   initialState,
   reducers: {
-    yearlyRevenueTrend: (
-      state: StatisticsState,
-      action: PayloadAction<{ oldValue: number; newValue: number }>
-    ) => {
-      state.yearlyRevenueDiff = calculateTrend(
-        action.payload.oldValue,
-        action.payload.newValue
-      );
+    setVisibility: (state, action: PayloadAction<string>) => {
+      if (state.hasOwnProperty(action.payload)) {
+        Object.keys(state).forEach((key) => {
+          state[key as keyof layoutState] = key === action.payload;
+        });
+      }
     },
-    yearlyExpensesTrend: (
-      state: StatisticsState,
-      action: PayloadAction<{ oldValue: number; newValue: number }>
-    ) => {
-      state.yearlyExpensesDiff = calculateTrend(
-        action.payload.oldValue,
-        action.payload.newValue
-      );
+    resetVisibility: (state) => {
+      Object.keys(state).forEach((key) => {
+        state[key as keyof layoutState] = true;
+      });
     },
   },
 });
 
-export const { yearlyRevenueTrend, yearlyExpensesTrend } =
-  StatisticsSlice.actions;
-export default StatisticsSlice.reducer;
+export const { setVisibility, resetVisibility } = layoutSlice.actions;
+export default layoutSlice.reducer;

@@ -1,66 +1,68 @@
 import { useGetKpisQuery } from "@/state/api";
 import { useTheme } from "@mui/material";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import {
-  ResponsiveContainer,
-  LineChart,
   CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  Tooltip,
-  Line,
 } from "recharts";
 import Spinner from "./Spinner";
+import { useSelector } from "react-redux";
+import { LayoutState } from "@/main";
 
-const ProfitAndRevenueLineChart = () => {
+const RevenueAndExpensesAreaChart = ({ gridArea }) => {
   const { palette } = useTheme();
   const { data, isLoading } = useGetKpisQuery();
-  const revenueAndProfit = useMemo(() => {
+
+  const revenueAndExpenses = useMemo(() => {
     return (
       data !== undefined &&
       data[0].monthlyData.map(({ month, revenue, expenses }) => {
         return {
           name: month.substring(0, 3),
           revenue: revenue,
-          profit: (revenue - expenses).toFixed(2),
+          expenses: expenses,
         };
       })
     );
   }, [data]);
 
   if (isLoading) return <Spinner />;
-  const minLeft = data[0].ranges.profit.min;
-  const maxLeft = data[0].ranges.profit.max;
-  const minRight = data[0].ranges.revenue.min;
-  const maxRight = data[0].ranges.revenue.max;
+  const { ranges } = data[0];
 
   return (
     <ResponsiveContainer width="99%" height="100%">
       <LineChart
-        data={revenueAndProfit}
+        data={revenueAndExpenses}
         margin={{
-          top: 20,
-          right: 0,
+          top: 30,
+          right: -10,
           left: -10,
-          bottom: 60,
+          bottom: 40,
         }}
       >
         <CartesianGrid vertical={false} stroke={palette.grey[800]} />
         <XAxis dataKey="name" tickLine={false} style={{ fontSize: ".7em" }} />
         <YAxis
           yAxisId="left"
-          tickLine={false}
+          orientation="left"
           axisLine={false}
+          tickLine={false}
           style={{ fontSize: ".6em" }}
-          domain={[minLeft, maxLeft]}
+          domain={[ranges.revenue.min, ranges.revenue.max]}
         />
         <YAxis
           yAxisId="right"
           orientation="right"
-          tickLine={false}
           axisLine={false}
-          domain={[minRight, maxRight]}
+          tickLine={false}
           style={{ fontSize: ".6em" }}
+          domain={[ranges.expenses.min, ranges.expenses.max]}
         />
         <Tooltip
           labelStyle={{
@@ -69,24 +71,32 @@ const ProfitAndRevenueLineChart = () => {
           contentStyle={{
             backgroundColor: palette.grey[800],
             borderRadius: "1rem",
-            offset: 50,
           }}
         />
+        <Legend
+          verticalAlign="bottom"
+          wrapperStyle={{
+            alignItems: "left",
+            fontSize: "0.7em",
+            bottom: "45px",
+            left: "-15px",
+          }}
+        ></Legend>
         <Line
           yAxisId="left"
           type="monotone"
-          dataKey="profit"
-          stroke={palette.tertiary[500]}
+          dataKey="revenue"
+          stroke={palette.primary.main}
         />
         <Line
           yAxisId="right"
           type="monotone"
-          dataKey="revenue"
-          stroke={palette.primary.main}
+          dataKey="expenses"
+          stroke={palette.tertiary[500]}
         />
       </LineChart>
     </ResponsiveContainer>
   );
 };
 
-export default ProfitAndRevenueLineChart;
+export default RevenueAndExpensesAreaChart;

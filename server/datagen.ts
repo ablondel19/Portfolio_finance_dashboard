@@ -32,14 +32,14 @@ const genDailyData = () => {
   while (start <= end) {
     const date = start.toISOString().split("T")[0];
     const revenue = `$${parseFloat(
-      faker.commerce.price({ min: 350 + i, max: 1150 + i })
+      faker.commerce.price({ min: 150 + i, max: 750 + i })
     )}`;
     const expenses = `$${parseFloat(
-      faker.commerce.price({ min: 250 + i, max: 400 + i })
+      faker.commerce.price({ min: 150 + i, max: 350 + i })
     )}`;
     dailyData.push({ date, revenue, expenses });
     start.setDate(start.getDate() + 1);
-    i++;
+    // i++;
   }
   return dailyData;
 };
@@ -169,11 +169,11 @@ const kpiData = monthlyData.reduce(
 );
 
 function roundUp(value: number) {
-  return Math.ceil(value / 1000) * 1000 + 1000;
+  return Math.ceil(value / 1000) * 1000;
 }
 
 function roundDown(value: number) {
-  return Math.floor(value / 1000) * 1000 - 1000;
+  return Math.floor(value / 1000) * 1000;
 }
 
 const format = (value: string) => {

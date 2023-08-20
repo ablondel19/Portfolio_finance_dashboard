@@ -1,26 +1,20 @@
-import BoxHeader from "@/components/BoxHeader";
-import DashboardBox from "@/components/DashboardBox";
-import RevenueAndExpensesAreaChart from "@/components/RevenueAndExpensesAreaChart";
-import ProfitAndRevenueLineChart from "@/components/ProfitAndRevenueLineChart";
+import ResizableBox from "@/components/DashboardBox";
+import RevenueAndExpensesAreaChart from "@/components/RevenueAndExpenses";
+import ProfitAndRevenueLineChart from "@/components/ProfitAndRevenue";
 import ExpensesLineChart from "@/components/ExpensesLineChart";
 
 const Row1 = () => {
   return (
     <>
-      <DashboardBox gridArea="a">
-        <BoxHeader title="Revenue and expenses"></BoxHeader>
-        <RevenueAndExpensesAreaChart />
-      </DashboardBox>
-      {/* /////////////////////////////////////////////////////////////////////////////////////////// */}
-      <DashboardBox gridArea="b">
-        <BoxHeader title="Profit and revenue"></BoxHeader>
-        <ProfitAndRevenueLineChart />
-      </DashboardBox>
-      {/* /////////////////////////////////////////////////////////////////////////////////////////// */}
-      <DashboardBox gridArea="c">
-        <BoxHeader title="Operational and non Operational expenses"></BoxHeader>
-        <ExpensesLineChart />
-      </DashboardBox>
+      <ResizableBox gridArea="a">
+        <RevenueAndExpensesAreaChart gridArea="a" />
+      </ResizableBox>
+      <ResizableBox gridArea="b">
+        <ProfitAndRevenueLineChart gridArea="b" />
+      </ResizableBox>
+      <ResizableBox gridArea="c">
+        <ExpensesLineChart gridArea="c" />
+      </ResizableBox>
     </>
   );
 };
