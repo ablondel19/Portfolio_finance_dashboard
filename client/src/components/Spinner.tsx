@@ -8,7 +8,7 @@ const Spinner = () => {
       display="flex"
       alignItems="center"
       justifyContent="center"
-      height="75%"
+      height="65%"
     >
       <style>
         {`

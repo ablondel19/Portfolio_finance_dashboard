@@ -1,18 +1,20 @@
 import BoxHeader from "@/components/BoxHeader";
-import ResizableBox from "@/components/DashboardBox";
+import ResizableBox from "@/components/ResizableBox";
 import MonthlyRevenueBarChart from "@/components/MonthlyRevenue";
+import Percentages from "@/components/Percentages";
+import Averages from "@/components/Averages";
 
-const Row2 = () => {
+const Row2 = ({ isAboveMediumScreens }) => {
   return (
     <>
-      <ResizableBox gridArea="d">
-        <></>
+      <ResizableBox gridArea="d" isAboveMediumScreens={isAboveMediumScreens}>
+        <Percentages gridArea="d" />
       </ResizableBox>
-      <ResizableBox gridArea="e">
-        {/* <MonthlyRevenueBarChart /> */}
+      <ResizableBox gridArea="e" isAboveMediumScreens={isAboveMediumScreens}>
+        <MonthlyRevenueBarChart gridArea="e" />
       </ResizableBox>
-      <ResizableBox gridArea="f">
-        <></>
+      <ResizableBox gridArea="f" isAboveMediumScreens={isAboveMediumScreens}>
+        <Averages gridArea="f" />
       </ResizableBox>
     </>
   );

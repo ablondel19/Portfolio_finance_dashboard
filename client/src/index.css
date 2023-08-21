@@ -1,14 +1,19 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
-
+/* * {
+  box-sizing: border-box;
+} */
 html,
 body,
 #root,
 .app {
-  padding: auto;
   height: 100%;
   width: 100%;
   font-family: "inter", sans-serif;
   background-color: #1f2026;
+}
+
+body {
+  padding: 1%;
 }
 
 ::-webkit-scrollbar {
@@ -27,24 +32,18 @@ body,
   background: #68696e;
 }
 
-.recharts-pie-sector {
-  outline: none !important;
-}
-
-.fade-enter {
-  opacity: 0;
-  transition: opacity 0.5s ease-in-out;
-}
-
-.fade-enter-active {
+/* Fade in-out animation */
+.fade-out-init {
   opacity: 1;
+  transition: opacity 0.25s ease-in-out;
 }
 
-.fade-exit {
-  opacity: 1;
-  transition: opacity 0.5s ease-in-out;
-}
-
-.fade-exit-active {
+.fade-out-end {
   opacity: 0;
+  transition: opacity 0.25s ease-in-out;
+}
+
+.MuiBox-root {
+  /* margin: 0 !important; */
+  /* padding: 0 !important; */
 }

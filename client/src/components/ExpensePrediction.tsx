@@ -15,7 +15,7 @@ import regression, { DataPoint } from "regression";
 import Spinner from "./Spinner";
 import { floor, ceil } from "@/utils/utils";
 
-const ExpensePrediction = () => {
+const ExpensePrediction = ({ gridArea }) => {
   const { palette } = useTheme();
   const { data, isLoading } = useGetKpisQuery();
 
@@ -59,14 +59,11 @@ const ExpensePrediction = () => {
   );
 
   return (
-    <ResponsiveContainer width="99%" height="90%">
+    <ResponsiveContainer width="99%" height="65%">
       <LineChart
         data={formattedData}
         margin={{
-          top: 20,
-          right: 20,
-          left: 0,
-          bottom: 20,
+          right: 25,
         }}
       >
         <CartesianGrid stroke={palette.grey[800]} strokeDasharray="3 3" />
@@ -82,23 +79,22 @@ const ExpensePrediction = () => {
           tickFormatter={(v) => `$${v}`}
         ></YAxis>
         <Tooltip
-          labelStyle={{
-            color: palette.grey[400],
-          }}
+          offset={50}
           contentStyle={{
+            borderColor: palette.grey[700],
             backgroundColor: palette.grey[800],
-            borderRadius: "1rem",
+            color: palette.grey[300],
+            borderRadius: "0.25rem",
           }}
         />
         <Legend
-          verticalAlign="bottom"
           wrapperStyle={{
-            fontSize: "0.7em",
+            fontSize: "0.75em",
             position: "relative",
-            bottom: "40px",
-            left: "15px",
+            left: "2em",
+            bottom: "2em",
           }}
-        ></Legend>
+        />
         <Line
           type="monotone"
           dataKey="Actual expenses"

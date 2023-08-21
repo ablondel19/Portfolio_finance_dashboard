@@ -3,17 +3,18 @@ import { useTheme } from "@mui/material";
 import { useMemo } from "react";
 import {
   ResponsiveContainer,
-  LineChart,
   CartesianGrid,
   XAxis,
   YAxis,
   Tooltip,
-  Line,
+  AreaChart,
+  Area,
   Legend,
 } from "recharts";
 import Spinner from "./Spinner";
 import { LayoutState } from "@/main";
 import { useSelector } from "react-redux";
+import { ChartMargin, CustomDot } from "./utils";
 
 const ExpensesLineChart = ({ gridArea }) => {
   const { palette } = useTheme();
@@ -41,64 +42,79 @@ const ExpensesLineChart = ({ gridArea }) => {
   const maxRight = data[0].ranges.opExp.max;
 
   return (
-    <ResponsiveContainer width="99%" height="100%">
-      <LineChart
-        data={operationalExpenses}
-        margin={{
-          top: 30,
-          right: -10,
-          left: -10,
-          bottom: 40,
-        }}
-      >
+    <ResponsiveContainer width="100%" height="65%">
+      <AreaChart data={operationalExpenses} margin={ChartMargin}>
+        <defs>
+          <linearGradient id="color1" x1="0" y1="0" x2="0" y2="1">
+            <stop
+              offset="15%"
+              stopColor={palette.primary[500]}
+              stopOpacity={0.1}
+            />
+            <stop
+              offset="95%"
+              stopColor={palette.primary[500]}
+              stopOpacity={0.2}
+            />
+          </linearGradient>
+          <linearGradient id="color2" x1="0" y1="0" x2="0" y2="1">
+            <stop
+              offset="15%"
+              stopColor={palette.tertiary[500]}
+              stopOpacity={0.1}
+            />
+            <stop
+              offset="95%"
+              stopColor={palette.tertiary[500]}
+              stopOpacity={0.2}
+            />
+          </linearGradient>
+        </defs>
         <CartesianGrid vertical={false} stroke={palette.grey[800]} />
         <XAxis dataKey="name" tickLine={false} style={{ fontSize: ".7em" }} />
         <YAxis
           yAxisId="left"
           orientation="left"
-          tickLine={false}
-          axisLine={false}
+          tickLine={true}
+          axisLine={true}
           style={{ fontSize: ".6em" }}
           domain={[minLeft, maxLeft]}
         />
         <YAxis
           yAxisId="right"
           orientation="right"
-          tickLine={false}
-          axisLine={false}
+          tickLine={true}
+          axisLine={true}
           style={{ fontSize: ".6em" }}
           domain={[minRight, maxRight]}
         />
         <Tooltip
-          labelStyle={{
-            color: palette.grey[400],
-          }}
+          offset={50}
           contentStyle={{
+            borderColor: palette.grey[700],
             backgroundColor: palette.grey[800],
-            borderRadius: "1rem",
-            offset: 50,
+            color: palette.grey[300],
+            borderRadius: "0.25rem",
           }}
         />
-        <Legend
-          verticalAlign="bottom"
-          wrapperStyle={{
-            fontSize: "0.7em",
-            bottom: "45px",
-          }}
-        ></Legend>
-        <Line
+        <Legend wrapperStyle={{ fontSize: "0.75em" }} />
+        <Area
           yAxisId="left"
           type="monotone"
           dataKey="Non operational expenses"
           stroke={palette.tertiary[500]}
+          dot={CustomDot}
+          fill="url(#color2)"
         />
-        <Line
+        <Area
           yAxisId="right"
           type="monotone"
           dataKey="Operational expenses"
           stroke={palette.primary.main}
+          dot={CustomDot}
+          fill="url(#color1)"
         />
-      </LineChart>
+      </AreaChart>
     </ResponsiveContainer>
   );
 };

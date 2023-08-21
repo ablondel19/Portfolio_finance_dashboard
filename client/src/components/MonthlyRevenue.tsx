@@ -12,8 +12,9 @@ import {
   Legend,
 } from "recharts";
 import Spinner from "./Spinner";
+import { ChartMargin } from "./utils";
 
-const MonthlyRevenueBarChart = () => {
+const MonthlyRevenueBarChart = ({ gridArea }) => {
   const { palette } = useTheme();
   const { data, isLoading } = useGetKpisQuery();
 
@@ -33,32 +34,25 @@ const MonthlyRevenueBarChart = () => {
 
   if (isLoading) return <Spinner />;
   const { ranges } = data[0];
-  const minRight = ranges.revenue.min;
-  const maxRight = ranges.revenue.max;
 
-  const minLeft =
+  const min =
     ranges.expenses.min <= ranges.profit.min
       ? ranges.expenses.min - 1000
       : ranges.profit.min - 1000;
 
-  const maxLeft =
-    ranges.expenses.max >= ranges.profit.max
+  const max =
+    ranges.expenses.max >= ranges.revenue.max
       ? ranges.expenses.max
-      : ranges.profit.max;
+      : ranges.revenue.max;
 
   return (
-    <ResponsiveContainer width="99%" height="100%">
+    <ResponsiveContainer width="99%" height="65%">
       <BarChart
         barGap={1}
         width={500}
         height={300}
         data={barData}
-        margin={{
-          top: 30,
-          right: -10,
-          left: -10,
-          bottom: 40,
-        }}
+        margin={ChartMargin}
       >
         <defs>
           <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
@@ -111,40 +105,30 @@ const MonthlyRevenueBarChart = () => {
           axisLine={false}
           tickLine={false}
           style={{ fontSize: ".6em" }}
-          domain={[minRight, maxRight]}
+          domain={[min, max]}
         />
         <YAxis
-          yAxisId="left"
           orientation="left"
           axisLine={false}
           tickLine={false}
           style={{ fontSize: ".6em" }}
-          domain={[minLeft, maxLeft]}
+          domain={[min, max]}
         />
         <Tooltip
-          labelStyle={{
-            color: palette.grey[300],
-          }}
+          offset={50}
           contentStyle={{
             borderColor: palette.grey[700],
             backgroundColor: palette.grey[800],
             color: palette.grey[300],
-            borderRadius: ".5rem",
+            borderRadius: "0.25rem",
           }}
         />
         <Legend
-          verticalAlign="bottom"
-          wrapperStyle={{
-            color: palette.grey[300],
-            alignItems: "left",
-            fontSize: "0.7em",
-            bottom: "45px",
-            left: "-15px",
-          }}
-        ></Legend>
-        <Bar yAxisId="right" dataKey="revenue" fill="url(#colorRevenue)" />
-        <Bar yAxisId="left" dataKey="expenses" fill="url(#colorExpenses)" />
-        <Bar yAxisId="left" dataKey="profit" fill="url(#colorProfit)" />
+          wrapperStyle={{ fontSize: "0.75em", color: palette.grey[200] }}
+        />
+        <Bar dataKey="revenue" fill="url(#colorRevenue)" />
+        <Bar dataKey="expenses" fill="url(#colorExpenses)" />
+        <Bar dataKey="profit" fill="url(#colorProfit)" />
       </BarChart>
     </ResponsiveContainer>
   );
