@@ -7,6 +7,22 @@ import BoxHeader from "./BoxHeader";
 import { MenuIconButton } from "../buttons/MenuIconButton";
 import { ExpandIconButton } from "../buttons/ExpandIconButton";
 import { CalendarIconButton } from "../buttons/CalendarIconButton";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import "./DatePicker.css";
+import React from "react";
+
+const titles = {
+  a: "Revenue and expenses",
+  b: "Profit and revenue",
+  c: "Expenses",
+  d: "Percentages",
+  e: "Overview",
+  f: "Averages",
+  g: "Revenue prediction",
+  h: "Profit prediction",
+  i: "Expenses prediction",
+};
 
 const DashboardBox = styled(Box)(({ theme }) => ({
   width: "100%",
@@ -23,6 +39,30 @@ interface ResizableBoxProps {
   isAboveMediumScreens: boolean;
 }
 
+/*
+() => {
+  const [startDate, setStartDate] = useState(new Date("2022/01/01"));
+  const [endDate, setEndDate] = useState(null);
+
+  const handleChange = ([newStartDate, newEndDate]) => {
+    setStartDate(newStartDate);
+    setEndDate(newEndDate);
+  };
+
+  return (
+    <DatePicker
+      selected={startDate}
+      onChange={handleChange}
+      selectsRange
+      startDate={startDate}
+      endDate={endDate}
+      dateFormat="MM/yyyy"
+      showMonthYearPicker
+    />
+  );
+};
+*/
+
 const ResizableBox: React.FC<ResizableBoxProps> = ({
   children,
   gridArea,
@@ -30,6 +70,19 @@ const ResizableBox: React.FC<ResizableBoxProps> = ({
 }) => {
   let resizeTimeout: number;
   const [isResizing, setIsResizing] = useState(false);
+  const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
+  const [startDate, setStartDate] = useState(new Date("2022-01-01"));
+  const [endDate, setEndDate] = useState(new Date("2022-12-31"));
+
+  const handleChange = ([newStartDate, newEndDate]) => {
+    setStartDate(newStartDate);
+    setEndDate(newEndDate);
+    if (newStartDate && newEndDate) toggleDatePicker();
+  };
+
+  const toggleDatePicker = () => {
+    setIsDatePickerVisible(!isDatePickerVisible);
+  };
 
   const handleResizeStart = () => {
     clearTimeout(resizeTimeout);
@@ -52,17 +105,20 @@ const ResizableBox: React.FC<ResizableBoxProps> = ({
     };
   }, []);
 
-  const titles = {
-    a: "Revenue and expenses",
-    b: "Profit and revenue",
-    c: "Expenses",
-    d: "Percentages",
-    e: "Overview",
-    f: "Averages",
-    g: "Revenue prediction",
-    h: "Profit prediction",
-    i: "Expenses prediction",
+  type ChildProps = {
+    startDate: Date;
+    endDate: Date | null;
   };
+
+  const modifiedChildren = React.Children.map(children, (child) => {
+    if (React.isValidElement<ChildProps>(child)) {
+      return React.cloneElement(child, {
+        startDate: startDate,
+        endDate: endDate,
+      });
+    }
+    return child;
+  });
 
   return (
     <DashboardBox gridArea={gridArea} sx={{ width: "100%", height: "100%" }}>
@@ -77,7 +133,7 @@ const ResizableBox: React.FC<ResizableBoxProps> = ({
         </Box>
         <Box height="100%" display="flex">
           <Box height="100%" display="flex" alignItems="flex-end">
-            <CalendarIconButton />
+            <CalendarIconButton onCalendarClick={toggleDatePicker} />
             <MenuIconButton />
           </Box>
           {isAboveMediumScreens && (
@@ -88,7 +144,28 @@ const ResizableBox: React.FC<ResizableBoxProps> = ({
           )}
         </Box>
       </Box>
-      {isResizing ? <Spinner /> : children}
+      {isDatePickerVisible ? (
+        <Box
+          maxHeight="15rem"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <DatePicker
+            // selected={startDate}
+            onChange={handleChange}
+            selectsRange
+            startDate={startDate}
+            endDate={endDate}
+            dateFormat="MM/yyyy"
+            showMonthYearPicker
+            shouldCloseOnSelect={true}
+            inline
+          />
+        </Box>
+      ) : (
+        <>{isResizing ? <Spinner /> : modifiedChildren}</>
+      )}
     </DashboardBox>
   );
 };

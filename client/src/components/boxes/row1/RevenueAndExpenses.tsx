@@ -12,10 +12,17 @@ import {
 } from "recharts";
 import Spinner from "../../utils/Spinner";
 import { ChartMargin, CustomDot } from "../../utils/utils";
+import { useEffect } from "react";
 
-const RevenueAndExpenses = ({ gridArea }) => {
+const RevenueAndExpenses = ({ gridArea, startDate, endDate }) => {
   const { palette } = useTheme();
   const { data, isLoading } = useGetKpisQuery();
+
+  console.log("---> ", startDate, endDate);
+  useEffect(() => {
+    console.log("StartDate:", startDate);
+    console.log("EndDate:", endDate);
+  }, [startDate, endDate]);
 
   const revenueAndExpenses = useMemo(() => {
     return (

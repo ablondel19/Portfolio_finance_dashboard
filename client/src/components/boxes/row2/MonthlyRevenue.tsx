@@ -158,21 +158,9 @@ const MonthlyRevenueBarChart = ({ gridArea }) => {
             />
           }
         />
-        <Bar
-          animationDuration={1750}
-          dataKey="revenue"
-          fill="url(#colorRevenue)"
-        />
-        <Bar
-          animationDuration={1750}
-          dataKey="expenses"
-          fill="url(#colorExpenses)"
-        />
-        <Bar
-          animationDuration={1750}
-          dataKey="profit"
-          fill="url(#colorProfit)"
-        />
+        <Bar dataKey="revenue" fill="url(#colorRevenue)" />
+        <Bar dataKey="expenses" fill="url(#colorExpenses)" />
+        <Bar dataKey="profit" fill="url(#colorProfit)" />
       </BarChart>
     </ResponsiveContainer>
   );

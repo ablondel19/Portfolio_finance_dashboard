@@ -1,5 +1,3 @@
-import { useTheme } from "@mui/material";
-
 export const ChartMargin = {
   top: 0,
   right: 0,
