@@ -3,19 +3,19 @@ import { useTheme } from "@mui/material";
 import { useMemo } from "react";
 import {
   ResponsiveContainer,
-  LineChart,
   CartesianGrid,
   XAxis,
   YAxis,
   Tooltip,
-  Legend,
   Line,
+  ComposedChart,
+  Area,
 } from "recharts";
 import regression, { DataPoint } from "regression";
-import Spinner from "./Spinner";
+import Spinner from "../../utils/Spinner";
 import { floor, ceil } from "@/utils/utils";
 
-const ProfitPrediction = ({ gridArea }) => {
+const RevenuePrediction = ({ gridArea }) => {
   const { palette } = useTheme();
   const { data, isLoading } = useGetKpisQuery();
 
@@ -23,45 +23,45 @@ const ProfitPrediction = ({ gridArea }) => {
     if (!data) return [];
     const monthData = data[0].monthlyData;
     const formatted: Array<DataPoint> = monthData.map(
-      ({ profit }, index: number) => {
-        return [index, parseFloat(profit.toString())];
+      ({ revenue }, index: number) => {
+        return [index, parseFloat(revenue.toString())];
       }
     );
     const regressionLine = regression.linear(formatted);
-    // console.log("formattedData ~ regressionLine:", regressionLine);
-    return monthData.map(({ month, profit }, index: number) => {
+    return monthData.map(({ month, revenue }, index: number) => {
       return {
         name: month.substring(0, 3),
-        "Actual profit": profit,
+        "Actual revenue": revenue,
         "Regression line": regressionLine.points[index][1],
-        "Predicted profit": regressionLine.predict(index + 12)[1],
+        "Predicted revenue": regressionLine.predict(index + 12)[1],
       };
     });
   }, [data]);
 
-  if (isLoading) return <Spinner />;
   const ranges = formattedData.reduce(
     (acc, data) => {
-      if (data["Actual profit"] <= acc.min)
-        acc.min = floor(data["Actual profit"]);
+      if (data["Actual revenue"] <= acc.min)
+        acc.min = floor(data["Actual revenue"]);
       if (data["Regression line"] <= acc.min)
         acc.min = floor(data["Regression line"]);
-      if (data["Predicted profit"] <= acc.min)
-        acc.min = floor(data["Predicted profit"]);
-      if (data["Actual profit"] >= acc.max)
-        acc.max = ceil(data["Actual profit"]);
+      if (data["Predicted revenue"] <= acc.min)
+        acc.min = floor(data["Predicted revenue"]);
+      if (data["Actual revenue"] >= acc.max)
+        acc.max = ceil(data["Actual revenue"]);
       if (data["Regression line"] >= acc.max)
         acc.max = ceil(data["Regression line"]);
-      if (data["Predicted profit"] >= acc.max)
-        acc.max = ceil(data["Predicted profit"]);
+      if (data["Predicted revenue"] >= acc.max)
+        acc.max = ceil(data["Predicted revenue"]);
       return acc;
     },
     { min: Infinity, max: -Infinity }
   );
 
+  if (isLoading) return <Spinner />;
+
   return (
-    <ResponsiveContainer width="99%" height="65%">
-      <LineChart
+    <ResponsiveContainer width="99%" height="65%" debounce={1250}>
+      <ComposedChart
         data={formattedData}
         margin={{
           right: 25,
@@ -88,20 +88,11 @@ const ProfitPrediction = ({ gridArea }) => {
             borderRadius: "0.25rem",
           }}
         />
-        <Legend
-          wrapperStyle={{
-            fontSize: "0.75em",
-            position: "relative",
-            left: "2em",
-            bottom: "2em",
-          }}
-        />
-        <Line
+        <Area
           type="monotone"
-          dataKey="Actual profit"
+          dataKey="Actual revenue"
           stroke={palette.primary.main}
-          strokeWidth={0}
-          dot={{ strokeWidth: 1 }}
+          fill="url(#color1)"
         />
         <Line
           type="monotone"
@@ -111,12 +102,13 @@ const ProfitPrediction = ({ gridArea }) => {
         />
         <Line
           type="monotone"
-          dataKey="Predicted profit"
+          dataKey="Predicted revenue"
           stroke={palette.secondary[500]}
+          dot={false}
         />
-      </LineChart>
+      </ComposedChart>
     </ResponsiveContainer>
   );
 };
 
-export default ProfitPrediction;
+export default RevenuePrediction;

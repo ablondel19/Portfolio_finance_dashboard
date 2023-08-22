@@ -2,41 +2,48 @@ import { useGetKpisQuery } from "@/state/api";
 import { useTheme } from "@mui/material";
 import { useMemo } from "react";
 import {
-  CartesianGrid,
-  Legend,
   ResponsiveContainer,
-  Tooltip,
+  CartesianGrid,
   XAxis,
   YAxis,
+  Tooltip,
   AreaChart,
   Area,
+  Legend,
 } from "recharts";
-import Spinner from "./Spinner";
-import { ChartMargin, CustomDot } from "./utils";
+import Spinner from "../../utils/Spinner";
+import { LayoutState } from "@/main";
+import { useSelector } from "react-redux";
+import { ChartMargin, CustomDot } from "../../utils/utils";
 
-const RevenueAndExpensesAreaChart = ({ gridArea }) => {
+const ExpensesLineChart = ({ gridArea }) => {
   const { palette } = useTheme();
   const { data, isLoading } = useGetKpisQuery();
 
-  const revenueAndExpenses = useMemo(() => {
+  const operationalExpenses = useMemo(() => {
     return (
       data !== undefined &&
-      data[0].monthlyData.map(({ month, revenue, expenses }) => {
-        return {
-          name: month.substring(0, 3),
-          revenue: revenue,
-          expenses: expenses,
-        };
-      })
+      data[0].monthlyData.map(
+        ({ month, nonOperationalExpenses, operationalExpenses }) => {
+          return {
+            name: month.substring(0, 3),
+            "Non operational expenses": nonOperationalExpenses,
+            "Operational expenses": operationalExpenses,
+          };
+        }
+      )
     );
   }, [data]);
 
   if (isLoading) return <Spinner />;
-  const { ranges } = data[0];
+  const minLeft = data[0].ranges.nonOpExp.min;
+  const maxLeft = data[0].ranges.nonOpExp.max;
+  const minRight = data[0].ranges.opExp.min;
+  const maxRight = data[0].ranges.opExp.max;
 
   return (
-    <ResponsiveContainer width="100%" height="65%">
-      <AreaChart data={revenueAndExpenses} margin={ChartMargin}>
+    <ResponsiveContainer width="100%" height="65%" debounce={1250}>
+      <AreaChart data={operationalExpenses} margin={ChartMargin}>
         <defs>
           <linearGradient id="color1" x1="0" y1="0" x2="0" y2="1">
             <stop
@@ -68,18 +75,18 @@ const RevenueAndExpensesAreaChart = ({ gridArea }) => {
         <YAxis
           yAxisId="left"
           orientation="left"
-          axisLine={true}
           tickLine={true}
+          axisLine={true}
           style={{ fontSize: ".6em" }}
-          domain={[ranges.revenue.min, ranges.revenue.max]}
+          domain={[minLeft, maxLeft]}
         />
         <YAxis
           yAxisId="right"
           orientation="right"
-          axisLine={true}
           tickLine={true}
+          axisLine={true}
           style={{ fontSize: ".6em" }}
-          domain={[ranges.expenses.min, ranges.expenses.max]}
+          domain={[minRight, maxRight]}
         />
         <Tooltip
           offset={50}
@@ -90,26 +97,25 @@ const RevenueAndExpensesAreaChart = ({ gridArea }) => {
             borderRadius: "0.25rem",
           }}
         />
-        <Legend wrapperStyle={{ fontSize: "0.75em" }} />
         <Area
           yAxisId="left"
           type="monotone"
-          dataKey="revenue"
-          stroke={palette.primary.main}
-          dot={CustomDot}
-          fill="url(#color1)"
+          dataKey="Non operational expenses"
+          stroke={palette.tertiary[500]}
+          // dot={CustomDot}
+          fill="url(#color2)"
         />
         <Area
           yAxisId="right"
           type="monotone"
-          dataKey="expenses"
-          stroke={palette.tertiary[500]}
-          dot={CustomDot}
-          fill="url(#color2)"
+          dataKey="Operational expenses"
+          stroke={palette.primary.main}
+          // dot={CustomDot}
+          fill="url(#color1)"
         />
       </AreaChart>
     </ResponsiveContainer>
   );
 };
 
-export default RevenueAndExpensesAreaChart;
+export default ExpensesLineChart;

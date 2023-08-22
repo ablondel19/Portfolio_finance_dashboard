@@ -1,20 +1,19 @@
-import { Box, makeStyles, useMediaQuery } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 import Row1 from "./Row1";
 import Row2 from "./Row2";
 import Row3 from "./Row3";
-import Spinner from "@/components/Spinner";
 import { LayoutState } from "@/main";
 import { useSelector } from "react-redux";
-import RevenueAndExpensesAreaChart from "@/components/RevenueAndExpenses";
-import ResizableBox from "@/components/ResizableBox";
+import RevenueAndExpenses from "@/components/boxes/row1/RevenueAndExpenses";
+import ResizableBox from "@/components/utils/ResizableBox";
 import { styled } from "@mui/system";
-import ProfitAndRevenueLineChart from "@/components/ProfitAndRevenue";
-import Percentages from "@/components/Percentages";
-import MonthlyRevenueBarChart from "@/components/MonthlyRevenue";
-import Averages from "@/components/Averages";
-import ProfitPrediction from "@/components/ProfitPrediction";
-import RevenuePrediction from "@/components/RevenuePrediction";
-import ExpensePrediction from "@/components/ExpensePrediction";
+import ProfitAndRevenueLineChart from "@/components/boxes/row1/ProfitAndRevenue";
+import Percentages from "@/components/boxes/row2/Percentages";
+import MonthlyRevenueBarChart from "@/components/boxes/row2/MonthlyRevenue";
+import Averages from "@/components/boxes/row2/Averages";
+import ProfitPrediction from "@/components/boxes/row3/ProfitPrediction";
+import RevenuePrediction from "@/components/boxes/row3/RevenuePrediction";
+import ExpensePrediction from "@/components/boxes/row3/ExpensePrediction";
 
 const gridTemplateLargeScreens = `
   "a b c"
@@ -40,7 +39,7 @@ const gridTemplateSmallScreens = `
   "i"
 `;
 
-const MyKeyframesAnimation = styled("div")(({ theme }) => ({
+const MyKeyframesAnimation = styled("div")(() => ({
   "@keyframes myAnimation": {
     "0%": {
       opacity: 0.75,
@@ -82,7 +81,7 @@ const Dashboard = () => {
               gridArea="a"
               isAboveMediumScreens={isAboveMediumScreens}
             >
-              <RevenueAndExpensesAreaChart gridArea="a" />
+              <RevenueAndExpenses gridArea="a" />
             </ResizableBox>
           )}
           {selectedGridArea === "b" && (
@@ -157,7 +156,6 @@ const Dashboard = () => {
   return (
     <Box
       width="100%"
-      height="90%"
       display="grid"
       gap="1rem"
       sx={
@@ -169,7 +167,7 @@ const Dashboard = () => {
             }
           : {
               gridAutoColumns: "1fr",
-              gridAutoRows: "300px",
+              gridAutoRows: "16.5rem",
               gridTemplateAreas: gridTemplateSmallScreens,
             }
       }

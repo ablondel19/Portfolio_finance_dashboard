@@ -1,5 +1,4 @@
 import React from "react";
-import FlexBetween from "./FlexBetween";
 import { Box, Typography, useTheme } from "@mui/material";
 import {
   ArrowUpwardOutlined,
@@ -19,7 +18,12 @@ const TrendBox = ({ revenue, expenses }: Props) => {
   const { palette } = useTheme();
   if (!revenue && !expenses) return;
   return (
-    <FlexBetween>
+    <Box
+      height="0rem"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+    >
       <Typography
         sx={{
           color: revenue.startsWith("-")
@@ -79,7 +83,7 @@ const TrendBox = ({ revenue, expenses }: Props) => {
           ></ArrowUpwardOutlined>
         )}
       </Typography>
-    </FlexBetween>
+    </Box>
   );
 };
 

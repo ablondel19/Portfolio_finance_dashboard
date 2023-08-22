@@ -3,64 +3,64 @@ import { useTheme } from "@mui/material";
 import { useMemo } from "react";
 import {
   ResponsiveContainer,
-  LineChart,
   CartesianGrid,
   XAxis,
   YAxis,
   Tooltip,
-  Legend,
   Line,
+  ComposedChart,
+  Area,
 } from "recharts";
 import regression, { DataPoint } from "regression";
-import Spinner from "./Spinner";
+import Spinner from "../../utils/Spinner";
 import { floor, ceil } from "@/utils/utils";
 
-const RevenuePrediction = ({ gridArea }) => {
+const ExpensePrediction = ({ gridArea }) => {
   const { palette } = useTheme();
   const { data, isLoading } = useGetKpisQuery();
-
   const formattedData = useMemo(() => {
     if (!data) return [];
     const monthData = data[0].monthlyData;
     const formatted: Array<DataPoint> = monthData.map(
-      ({ revenue }, index: number) => {
-        return [index, parseFloat(revenue.toString())];
+      ({ expenses }, index: number) => {
+        return [index, parseFloat(expenses.toString())];
       }
     );
     const regressionLine = regression.linear(formatted);
-    return monthData.map(({ month, revenue }, index: number) => {
+    return monthData.map(({ month, expenses }, index: number) => {
       return {
         name: month.substring(0, 3),
-        "Actual revenue": revenue,
+        "Actual expenses": expenses,
         "Regression line": regressionLine.points[index][1],
-        "Predicted revenue": regressionLine.predict(index + 12)[1],
+        "Predicted expenses": regressionLine.predict(index + 12)[1],
       };
     });
   }, [data]);
 
-  if (isLoading) return <Spinner />;
   const ranges = formattedData.reduce(
     (acc, data) => {
-      if (data["Actual revenue"] <= acc.min)
-        acc.min = floor(data["Actual revenue"]);
+      if (data["Actual expenses"] <= acc.min)
+        acc.min = floor(data["Actual expenses"]);
       if (data["Regression line"] <= acc.min)
         acc.min = floor(data["Regression line"]);
-      if (data["Predicted revenue"] <= acc.min)
-        acc.min = floor(data["Predicted revenue"]);
-      if (data["Actual revenue"] >= acc.max)
-        acc.max = ceil(data["Actual revenue"]);
+      if (data["Predicted expenses"] <= acc.min)
+        acc.min = floor(data["Predicted expenses"]);
+      if (data["Actual expenses"] >= acc.max)
+        acc.max = ceil(data["Actual expenses"]);
       if (data["Regression line"] >= acc.max)
         acc.max = ceil(data["Regression line"]);
-      if (data["Predicted revenue"] >= acc.max)
-        acc.max = ceil(data["Predicted revenue"]);
+      if (data["Predicted expenses"] >= acc.max)
+        acc.max = ceil(data["Predicted expenses"]);
       return acc;
     },
     { min: Infinity, max: -Infinity }
   );
 
+  if (isLoading) return <Spinner />;
+
   return (
-    <ResponsiveContainer width="99%" height="65%">
-      <LineChart
+    <ResponsiveContainer width="99%" height="65%" debounce={1250}>
+      <ComposedChart
         data={formattedData}
         margin={{
           right: 25,
@@ -87,35 +87,29 @@ const RevenuePrediction = ({ gridArea }) => {
             borderRadius: "0.25rem",
           }}
         />
-        <Legend
-          wrapperStyle={{
-            fontSize: "0.75em",
-            position: "relative",
-            left: "2em",
-            bottom: "2em",
-          }}
-        />
-        <Line
+        <Area
           type="monotone"
-          dataKey="Actual revenue"
+          dataKey="Actual expenses"
           stroke={palette.primary.main}
-          strokeWidth={0}
-          dot={{ strokeWidth: 1 }}
+          fill="url(#color1)"
         />
         <Line
+          isAnimationActive={false}
           type="monotone"
           dataKey="Regression line"
           stroke={palette.tertiary[500]}
           dot={false}
         />
         <Line
+          isAnimationActive={false}
           type="monotone"
-          dataKey="Predicted revenue"
+          dataKey="Predicted expenses"
           stroke={palette.secondary[500]}
+          dot={false}
         />
-      </LineChart>
+      </ComposedChart>
     </ResponsiveContainer>
   );
 };
 
-export default RevenuePrediction;
+export default ExpensePrediction;

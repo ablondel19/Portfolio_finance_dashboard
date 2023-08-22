@@ -1,5 +1,5 @@
 import { useGetKpisQuery } from "@/state/api";
-import { useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import { useMemo } from "react";
 import {
   ResponsiveContainer,
@@ -11,8 +11,38 @@ import {
   Bar,
   Legend,
 } from "recharts";
-import Spinner from "./Spinner";
-import { ChartMargin } from "./utils";
+import Spinner from "../../utils/Spinner";
+import { ChartMargin } from "../../utils/utils";
+
+const CustomTooltip = ({ active, payload, label, name }) => {
+  const { palette } = useTheme();
+  if (active && payload && payload.length) {
+    return (
+      <Box
+        sx={{
+          padding: "1rem",
+          border: `1px solid ${palette.grey[700]}`,
+          backgroundColor: palette.grey[800],
+          color: palette.grey[300],
+          borderRadius: "0.25rem",
+        }}
+      >
+        <Typography sx={{ color: palette.grey[300] }}>{`${label}`}</Typography>
+        <Typography
+          sx={{ color: palette.primary.main }}
+        >{`${name[0]} : ${payload[0].value}`}</Typography>
+        <Typography
+          sx={{ color: palette.tertiary[500] }}
+        >{`${name[1]} : ${payload[1].value}`}</Typography>
+        <Typography
+          sx={{ color: palette.secondary.main }}
+        >{`${name[2]} : ${payload[2].value}`}</Typography>
+      </Box>
+    );
+  }
+
+  return null;
+};
 
 const MonthlyRevenueBarChart = ({ gridArea }) => {
   const { palette } = useTheme();
@@ -46,7 +76,7 @@ const MonthlyRevenueBarChart = ({ gridArea }) => {
       : ranges.revenue.max;
 
   return (
-    <ResponsiveContainer width="99%" height="65%">
+    <ResponsiveContainer width="99%" height="65%" debounce={1250}>
       <BarChart
         barGap={1}
         width={500}
@@ -59,7 +89,7 @@ const MonthlyRevenueBarChart = ({ gridArea }) => {
             <stop
               offset="35%"
               stopColor={palette.primary[500]}
-              stopOpacity={0.8}
+              stopOpacity={0.6}
             />
             <stop
               offset="95%"
@@ -71,7 +101,7 @@ const MonthlyRevenueBarChart = ({ gridArea }) => {
             <stop
               offset="35%"
               stopColor={palette.tertiary[500]}
-              stopOpacity={0.8}
+              stopOpacity={0.6}
             />
             <stop
               offset="95%"
@@ -83,7 +113,7 @@ const MonthlyRevenueBarChart = ({ gridArea }) => {
             <stop
               offset="35%"
               stopColor={palette.secondary[500]}
-              stopOpacity={0.8}
+              stopOpacity={0.6}
             />
             <stop
               offset="95%"
@@ -115,20 +145,34 @@ const MonthlyRevenueBarChart = ({ gridArea }) => {
           domain={[min, max]}
         />
         <Tooltip
-          offset={50}
-          contentStyle={{
-            borderColor: palette.grey[700],
-            backgroundColor: palette.grey[800],
-            color: palette.grey[300],
-            borderRadius: "0.25rem",
+          cursor={{
+            fill: palette.grey[700],
           }}
+          offset={50}
+          content={
+            <CustomTooltip
+              name={["Revenue", "Expenses", "Profit"]}
+              active={undefined}
+              payload={undefined}
+              label={undefined}
+            />
+          }
         />
-        <Legend
-          wrapperStyle={{ fontSize: "0.75em", color: palette.grey[200] }}
+        <Bar
+          animationDuration={1750}
+          dataKey="revenue"
+          fill="url(#colorRevenue)"
         />
-        <Bar dataKey="revenue" fill="url(#colorRevenue)" />
-        <Bar dataKey="expenses" fill="url(#colorExpenses)" />
-        <Bar dataKey="profit" fill="url(#colorProfit)" />
+        <Bar
+          animationDuration={1750}
+          dataKey="expenses"
+          fill="url(#colorExpenses)"
+        />
+        <Bar
+          animationDuration={1750}
+          dataKey="profit"
+          fill="url(#colorProfit)"
+        />
       </BarChart>
     </ResponsiveContainer>
   );

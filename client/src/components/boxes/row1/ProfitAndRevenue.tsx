@@ -11,10 +11,10 @@ import {
   Area,
   Legend,
 } from "recharts";
-import Spinner from "./Spinner";
+import Spinner from "../../utils/Spinner";
 import { LayoutState } from "@/main";
 import { useSelector } from "react-redux";
-import { ChartMargin, CustomDot } from "./utils";
+import { ChartMargin, CustomDot } from "../../utils/utils";
 
 const ProfitAndRevenueLineChart = ({ gridArea }) => {
   const { palette } = useTheme();
@@ -40,7 +40,7 @@ const ProfitAndRevenueLineChart = ({ gridArea }) => {
   const maxRight = data[0].ranges.revenue.max;
 
   return (
-    <ResponsiveContainer width="99%" height="65%">
+    <ResponsiveContainer width="99%" height="65%" debounce={1250}>
       <AreaChart data={revenueAndProfit} margin={ChartMargin}>
         <defs>
           <linearGradient id="color1" x1="0" y1="0" x2="0" y2="1">
@@ -94,13 +94,12 @@ const ProfitAndRevenueLineChart = ({ gridArea }) => {
             borderRadius: "0.25rem",
           }}
         />
-        <Legend wrapperStyle={{ fontSize: "0.75em" }} />
         <Area
           yAxisId="left"
           type="monotone"
           dataKey="profit"
           stroke={palette.tertiary[500]}
-          dot={CustomDot}
+          // dot={CustomDot}
           fill="url(#color2)"
         />
         <Area
@@ -108,7 +107,7 @@ const ProfitAndRevenueLineChart = ({ gridArea }) => {
           type="monotone"
           dataKey="revenue"
           stroke={palette.primary.main}
-          dot={CustomDot}
+          // dot={CustomDot}
           fill="url(#color1)"
         />
       </AreaChart>

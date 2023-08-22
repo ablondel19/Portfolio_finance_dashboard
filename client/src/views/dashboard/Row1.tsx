@@ -1,7 +1,7 @@
-import ResizableBox from "@/components/ResizableBox";
-import RevenueAndExpensesAreaChart from "@/components/RevenueAndExpenses";
-import ProfitAndRevenueLineChart from "@/components/ProfitAndRevenue";
-import ExpensesLineChart from "@/components/ExpensesLineChart";
+import ResizableBox from "@/components/utils/ResizableBox";
+import RevenueAndExpensesAreaChart from "@/components/boxes/row1/RevenueAndExpenses";
+import ProfitAndRevenueLineChart from "@/components/boxes/row1/ProfitAndRevenue";
+import ExpensesLineChart from "@/components/boxes/row1/ExpensesLineChart";
 
 const Row1 = ({ isAboveMediumScreens }) => {
   return (

@@ -1,8 +1,7 @@
-import BoxHeader from "@/components/BoxHeader";
-import ResizableBox from "@/components/ResizableBox";
-import MonthlyRevenueBarChart from "@/components/MonthlyRevenue";
-import Percentages from "@/components/Percentages";
-import Averages from "@/components/Averages";
+import ResizableBox from "@/components/utils/ResizableBox";
+import MonthlyRevenueBarChart from "@/components/boxes/row2/MonthlyRevenue";
+import Percentages from "@/components/boxes/row2/Percentages";
+import Averages from "@/components/boxes/row2/Averages";
 
 const Row2 = ({ isAboveMediumScreens }) => {
   return (

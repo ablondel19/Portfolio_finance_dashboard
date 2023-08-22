@@ -9,11 +9,7 @@ body,
   height: 100%;
   width: 100%;
   font-family: "inter", sans-serif;
-  background-color: #1f2026;
-}
-
-body {
-  padding: 1%;
+  background-color: hsl(231, 10%, 14%);
 }
 
 ::-webkit-scrollbar {
@@ -30,20 +26,4 @@ body {
 
 ::-webkit-scrollbar-track:hover {
   background: #68696e;
-}
-
-/* Fade in-out animation */
-.fade-out-init {
-  opacity: 1;
-  transition: opacity 0.25s ease-in-out;
-}
-
-.fade-out-end {
-  opacity: 0;
-  transition: opacity 0.25s ease-in-out;
-}
-
-.MuiBox-root {
-  /* margin: 0 !important; */
-  /* padding: 0 !important; */
 }

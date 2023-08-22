@@ -1,20 +1,19 @@
 import { useGetKpisQuery } from "@/state/api";
 import { useTheme } from "@mui/material";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import {
   CartesianGrid,
-  Legend,
-  Line,
-  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
+  AreaChart,
+  Area,
 } from "recharts";
-import Spinner from "./Spinner";
-import { ChartMargin } from "./utils";
+import Spinner from "../../utils/Spinner";
+import { ChartMargin, CustomDot } from "../../utils/utils";
 
-const Percentages = ({ gridArea }) => {
+const RevenueAndExpenses = ({ gridArea }) => {
   const { palette } = useTheme();
   const { data, isLoading } = useGetKpisQuery();
 
@@ -35,23 +34,49 @@ const Percentages = ({ gridArea }) => {
   const { ranges } = data[0];
 
   return (
-    <ResponsiveContainer width="100%" height="65%">
-      <LineChart data={revenueAndExpenses} margin={ChartMargin}>
+    <ResponsiveContainer width="100%" height="65%" debounce={1250}>
+      <AreaChart data={revenueAndExpenses} margin={ChartMargin}>
+        <defs>
+          <linearGradient id="color1" x1="0" y1="0" x2="0" y2="1">
+            <stop
+              offset="15%"
+              stopColor={palette.primary[500]}
+              stopOpacity={0.1}
+            />
+            <stop
+              offset="95%"
+              stopColor={palette.primary[500]}
+              stopOpacity={0.2}
+            />
+          </linearGradient>
+          <linearGradient id="color2" x1="0" y1="0" x2="0" y2="1">
+            <stop
+              offset="15%"
+              stopColor={palette.tertiary[500]}
+              stopOpacity={0.1}
+            />
+            <stop
+              offset="95%"
+              stopColor={palette.tertiary[500]}
+              stopOpacity={0.2}
+            />
+          </linearGradient>
+        </defs>
         <CartesianGrid vertical={false} stroke={palette.grey[800]} />
         <XAxis dataKey="name" tickLine={false} style={{ fontSize: ".7em" }} />
         <YAxis
           yAxisId="left"
           orientation="left"
-          axisLine={false}
-          tickLine={false}
+          axisLine={true}
+          tickLine={true}
           style={{ fontSize: ".6em" }}
           domain={[ranges.revenue.min, ranges.revenue.max]}
         />
         <YAxis
           yAxisId="right"
           orientation="right"
-          axisLine={false}
-          tickLine={false}
+          axisLine={true}
+          tickLine={true}
           style={{ fontSize: ".6em" }}
           domain={[ranges.expenses.min, ranges.expenses.max]}
         />
@@ -61,24 +86,27 @@ const Percentages = ({ gridArea }) => {
             borderColor: palette.grey[700],
             backgroundColor: palette.grey[800],
             color: palette.grey[300],
-            borderRadius: "0.25rem",
           }}
         />
-        <Line
+        <Area
           yAxisId="left"
           type="monotone"
           dataKey="revenue"
           stroke={palette.primary.main}
+          // dot={CustomDot}
+          fill="url(#color1)"
         />
-        <Line
+        <Area
           yAxisId="right"
           type="monotone"
           dataKey="expenses"
           stroke={palette.tertiary[500]}
+          // dot={CustomDot}
+          fill="url(#color2)"
         />
-      </LineChart>
+      </AreaChart>
     </ResponsiveContainer>
   );
 };
 
-export default Percentages;
+export default RevenueAndExpenses;

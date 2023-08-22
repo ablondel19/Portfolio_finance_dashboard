@@ -1,10 +1,9 @@
-import BoxHeader from "@/components/BoxHeader";
-import ResizableBox from "@/components/ResizableBox";
-import ExpensePrediction from "@/components/ExpensePrediction";
-import ProfitPrediction from "@/components/ProfitPrediction";
-import RevenuePrediction from "@/components/RevenuePrediction";
+import ResizableBox from "@/components/utils/ResizableBox";
+import ExpensePrediction from "@/components/boxes/row3/ExpensePrediction";
+import ProfitPrediction from "@/components/boxes/row3/ProfitPrediction";
+import RevenuePrediction from "@/components/boxes/row3/RevenuePrediction";
 
-const Row3 = (isAboveMediumScreens) => {
+const Row3 = ({ isAboveMediumScreens }) => {
   return (
     <>
       <ResizableBox gridArea="g" isAboveMediumScreens={isAboveMediumScreens}>
