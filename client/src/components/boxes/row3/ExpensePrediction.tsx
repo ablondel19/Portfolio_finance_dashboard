@@ -1,6 +1,6 @@
 import { useGetKpisQuery } from "@/state/api";
 import { useTheme } from "@mui/material";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import {
   ResponsiveContainer,
   CartesianGrid,
@@ -14,8 +14,9 @@ import {
 import regression, { DataPoint } from "regression";
 import Spinner from "../../utils/Spinner";
 import { floor, ceil } from "@/utils/utils";
+import { ChartProps } from "@/components/utils/utils";
 
-const ExpensePrediction = ({ gridArea }) => {
+const ExpensePrediction: React.FC<ChartProps> = () => {
   const { palette } = useTheme();
   const { data, isLoading } = useGetKpisQuery();
   const formattedData = useMemo(() => {

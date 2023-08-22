@@ -49,29 +49,6 @@ export const layoutSlice = createSlice({
             }
           });
         }
-        // console.log("Y: ", action.payload);
-        // console.log(
-        //   "State: a",
-        //   state.a,
-        //   ", b",
-        //   state.b,
-        //   ", c",
-        //   state.c,
-        //   ", d ",
-        //   state.d,
-        //   ", e",
-        //   state.e,
-        //   ", f",
-        //   state.f,
-        //   ", g",
-        //   state.g,
-        //   ", h ",
-        //   state.h,
-        //   ", i",
-        //   state.i,
-        //   ", selected => ",
-        //   state.selected
-        // );
       }
     },
   },

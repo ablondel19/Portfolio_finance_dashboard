@@ -2,7 +2,6 @@ import { Box } from "@mui/material";
 import { styled } from "@mui/system";
 import Spinner from "./Spinner";
 import { ReactNode, useEffect, useState } from "react";
-// import { ToggleOffOutlined, ToggleOnOutlined } from "@mui/icons-material";
 import BoxHeader from "./BoxHeader";
 import { MenuIconButton } from "../buttons/MenuIconButton";
 import { ExpandIconButton } from "../buttons/ExpandIconButton";
@@ -39,30 +38,6 @@ interface ResizableBoxProps {
   isAboveMediumScreens: boolean;
 }
 
-/*
-() => {
-  const [startDate, setStartDate] = useState(new Date("2022/01/01"));
-  const [endDate, setEndDate] = useState(null);
-
-  const handleChange = ([newStartDate, newEndDate]) => {
-    setStartDate(newStartDate);
-    setEndDate(newEndDate);
-  };
-
-  return (
-    <DatePicker
-      selected={startDate}
-      onChange={handleChange}
-      selectsRange
-      startDate={startDate}
-      endDate={endDate}
-      dateFormat="MM/yyyy"
-      showMonthYearPicker
-    />
-  );
-};
-*/
-
 const ResizableBox: React.FC<ResizableBoxProps> = ({
   children,
   gridArea,
@@ -71,8 +46,8 @@ const ResizableBox: React.FC<ResizableBoxProps> = ({
   let resizeTimeout: number;
   const [isResizing, setIsResizing] = useState(false);
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
-  const [startDate, setStartDate] = useState(new Date("2022-01-01"));
-  const [endDate, setEndDate] = useState(new Date("2022-12-31"));
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
 
   const handleChange = ([newStartDate, newEndDate]) => {
     setStartDate(newStartDate);
@@ -106,16 +81,20 @@ const ResizableBox: React.FC<ResizableBoxProps> = ({
   }, []);
 
   type ChildProps = {
+    gridArea: string;
     startDate: Date;
     endDate: Date | null;
   };
 
   const modifiedChildren = React.Children.map(children, (child) => {
     if (React.isValidElement<ChildProps>(child)) {
-      return React.cloneElement(child, {
-        startDate: startDate,
-        endDate: endDate,
-      });
+      if (child.props.gridArea === gridArea) {
+        return React.cloneElement(child, {
+          gridArea: gridArea,
+          startDate: startDate,
+          endDate: endDate,
+        });
+      }
     }
     return child;
   });
@@ -152,7 +131,6 @@ const ResizableBox: React.FC<ResizableBoxProps> = ({
           alignItems="center"
         >
           <DatePicker
-            // selected={startDate}
             onChange={handleChange}
             selectsRange
             startDate={startDate}

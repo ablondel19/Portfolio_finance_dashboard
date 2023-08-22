@@ -1,6 +1,6 @@
 import { useGetKpisQuery } from "@/state/api";
 import { useTheme } from "@mui/material";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import {
   ResponsiveContainer,
   CartesianGrid,
@@ -9,14 +9,11 @@ import {
   Tooltip,
   AreaChart,
   Area,
-  Legend,
 } from "recharts";
 import Spinner from "../../utils/Spinner";
-import { LayoutState } from "@/main";
-import { useSelector } from "react-redux";
-import { ChartMargin, CustomDot } from "../../utils/utils";
+import { ChartMargin, ChartProps } from "../../utils/utils";
 
-const ProfitAndRevenueLineChart = ({ gridArea }) => {
+const ProfitAndRevenueLineChart: React.FC<ChartProps> = () => {
   const { palette } = useTheme();
   const { data, isLoading } = useGetKpisQuery();
 
@@ -99,7 +96,6 @@ const ProfitAndRevenueLineChart = ({ gridArea }) => {
           type="monotone"
           dataKey="profit"
           stroke={palette.tertiary[500]}
-          // dot={CustomDot}
           fill="url(#color2)"
         />
         <Area
@@ -107,7 +103,6 @@ const ProfitAndRevenueLineChart = ({ gridArea }) => {
           type="monotone"
           dataKey="revenue"
           stroke={palette.primary.main}
-          // dot={CustomDot}
           fill="url(#color1)"
         />
       </AreaChart>

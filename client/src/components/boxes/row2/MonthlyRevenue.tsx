@@ -1,6 +1,6 @@
 import { useGetKpisQuery } from "@/state/api";
 import { Box, Typography, useTheme } from "@mui/material";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import {
   ResponsiveContainer,
   BarChart,
@@ -9,10 +9,9 @@ import {
   YAxis,
   Tooltip,
   Bar,
-  Legend,
 } from "recharts";
 import Spinner from "../../utils/Spinner";
-import { ChartMargin } from "../../utils/utils";
+import { ChartMargin, ChartProps } from "../../utils/utils";
 
 const CustomTooltip = ({ active, payload, label, name }) => {
   const { palette } = useTheme();
@@ -44,7 +43,7 @@ const CustomTooltip = ({ active, payload, label, name }) => {
   return null;
 };
 
-const MonthlyRevenueBarChart = ({ gridArea }) => {
+const MonthlyRevenueBarChart: React.FC<ChartProps> = () => {
   const { palette } = useTheme();
   const { data, isLoading } = useGetKpisQuery();
 

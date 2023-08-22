@@ -14,8 +14,9 @@ import {
 import regression, { DataPoint } from "regression";
 import Spinner from "../../utils/Spinner";
 import { floor, ceil } from "@/utils/utils";
+import { ChartProps } from "@/components/utils/utils";
 
-const RevenuePrediction = ({ gridArea }) => {
+const RevenuePrediction: React.FC<ChartProps> = () => {
   const { palette } = useTheme();
   const { data, isLoading } = useGetKpisQuery();
 

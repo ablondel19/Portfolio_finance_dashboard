@@ -1,3 +1,9 @@
+export type ChartProps = {
+  gridArea?: string;
+  startDate?: Date;
+  endDate?: Date;
+};
+
 export const ChartMargin = {
   top: 0,
   right: 0,

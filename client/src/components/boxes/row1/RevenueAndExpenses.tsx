@@ -1,6 +1,6 @@
 import { useGetKpisQuery } from "@/state/api";
 import { useTheme } from "@mui/material";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import {
   CartesianGrid,
   ResponsiveContainer,
@@ -11,18 +11,11 @@ import {
   Area,
 } from "recharts";
 import Spinner from "../../utils/Spinner";
-import { ChartMargin, CustomDot } from "../../utils/utils";
-import { useEffect } from "react";
+import { ChartMargin, ChartProps } from "../../utils/utils";
 
-const RevenueAndExpenses = ({ gridArea, startDate, endDate }) => {
+const RevenueAndExpenses: React.FC<ChartProps> = () => {
   const { palette } = useTheme();
   const { data, isLoading } = useGetKpisQuery();
-
-  console.log("---> ", startDate, endDate);
-  useEffect(() => {
-    console.log("StartDate:", startDate);
-    console.log("EndDate:", endDate);
-  }, [startDate, endDate]);
 
   const revenueAndExpenses = useMemo(() => {
     return (

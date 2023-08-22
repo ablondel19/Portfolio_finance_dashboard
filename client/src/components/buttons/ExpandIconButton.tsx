@@ -10,10 +10,7 @@ interface ExpandIconProps {
   isAboveMediumScreens: boolean;
 }
 
-export const ExpandIconButton: React.FC<ExpandIconProps> = ({
-  gridArea,
-  isAboveMediumScreens,
-}) => {
+export const ExpandIconButton: React.FC<ExpandIconProps> = ({ gridArea }) => {
   const { palette } = useTheme();
   const [zoomBtnColor, setZoomBtnColor] = useState(palette.grey[700]);
   const layoutState = useSelector((state: LayoutState) => state.layout);

@@ -14,6 +14,7 @@ import Averages from "@/components/boxes/row2/Averages";
 import ProfitPrediction from "@/components/boxes/row3/ProfitPrediction";
 import RevenuePrediction from "@/components/boxes/row3/RevenuePrediction";
 import ExpensePrediction from "@/components/boxes/row3/ExpensePrediction";
+import ExpensesLineChart from "@/components/boxes/row1/ExpensesLineChart";
 
 const gridTemplateLargeScreens = `
   "a b c"
@@ -59,7 +60,19 @@ const Dashboard = () => {
     (state: LayoutState) => state.layout.selected
   );
 
-  if (isAboveMediumScreens && selectedGridArea !== "") {
+  const components = {
+    a: <RevenueAndExpenses gridArea="a" />,
+    b: <ProfitAndRevenueLineChart gridArea="b" />,
+    c: <ExpensesLineChart gridArea="c" />,
+    d: <Percentages gridArea="d" />,
+    e: <MonthlyRevenueBarChart gridArea="e" />,
+    f: <Averages gridArea="f" />,
+    g: <RevenuePrediction gridArea="g" />,
+    h: <ProfitPrediction gridArea="h" />,
+    i: <ExpensePrediction gridArea="i" />,
+  };
+
+  if (isAboveMediumScreens && selectedGridArea) {
     const gridTemplateAreas = `
       "${selectedGridArea}"
     `;
@@ -76,76 +89,12 @@ const Dashboard = () => {
         }}
       >
         <MyKeyframesAnimation>
-          {selectedGridArea === "a" && (
+          {selectedGridArea && (
             <ResizableBox
-              gridArea="a"
+              gridArea={selectedGridArea}
               isAboveMediumScreens={isAboveMediumScreens}
             >
-              <RevenueAndExpenses gridArea="a" />
-            </ResizableBox>
-          )}
-          {selectedGridArea === "b" && (
-            <ResizableBox
-              gridArea="b"
-              isAboveMediumScreens={isAboveMediumScreens}
-            >
-              <ProfitAndRevenueLineChart gridArea="b" />
-            </ResizableBox>
-          )}
-          {selectedGridArea === "c" && (
-            <ResizableBox
-              gridArea="c"
-              isAboveMediumScreens={isAboveMediumScreens}
-            >
-              <ProfitAndRevenueLineChart gridArea="c" />
-            </ResizableBox>
-          )}
-          {selectedGridArea === "d" && (
-            <ResizableBox
-              gridArea="d"
-              isAboveMediumScreens={isAboveMediumScreens}
-            >
-              <Percentages gridArea="d" />
-            </ResizableBox>
-          )}
-          {selectedGridArea === "e" && (
-            <ResizableBox
-              gridArea="e"
-              isAboveMediumScreens={isAboveMediumScreens}
-            >
-              <MonthlyRevenueBarChart gridArea="e" />
-            </ResizableBox>
-          )}
-          {selectedGridArea === "f" && (
-            <ResizableBox
-              gridArea="f"
-              isAboveMediumScreens={isAboveMediumScreens}
-            >
-              <Averages gridArea="f" />
-            </ResizableBox>
-          )}
-          {selectedGridArea === "g" && (
-            <ResizableBox
-              gridArea="g"
-              isAboveMediumScreens={isAboveMediumScreens}
-            >
-              <RevenuePrediction gridArea="g" />
-            </ResizableBox>
-          )}
-          {selectedGridArea === "h" && (
-            <ResizableBox
-              gridArea="h"
-              isAboveMediumScreens={isAboveMediumScreens}
-            >
-              <ProfitPrediction gridArea="h" />
-            </ResizableBox>
-          )}
-          {selectedGridArea === "i" && (
-            <ResizableBox
-              gridArea="i"
-              isAboveMediumScreens={isAboveMediumScreens}
-            >
-              <ExpensePrediction gridArea="i" />
+              {components[selectedGridArea]}
             </ResizableBox>
           )}
         </MyKeyframesAnimation>
