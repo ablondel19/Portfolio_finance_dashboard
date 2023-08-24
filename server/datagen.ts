@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc.js";
+import { computerProducts } from "./seedData.ts";
 dayjs.extend(utc);
 
 const start = dayjs.utc("2021-01-01");
@@ -253,3 +254,224 @@ const kpis = [
 ];
 
 export default kpis;
+
+// console.log(computerProducts);
+
+/** SALES RECORD **/
+
+const randomSellers = () => {
+  let sellers = [];
+  for (let i = 0; i < 500; i++) {
+    const seller = {
+      sellerId: faker.database.mongodbObjectId(),
+      sellerName: faker.person.fullName(),
+      sellerLocation: `${faker.location.city()} ${faker.location.country()}`,
+    };
+    sellers.push(seller);
+  }
+  return sellers;
+};
+
+const Sellers = randomSellers();
+////////////////////////////////////////////////////////////////////////////////
+
+const randomProducts = () => {
+  const products = [];
+  for (let i = 0; i < 1000; i++) {
+    const seed = faker.helpers.arrayElement(computerProducts);
+    const product = {
+      productId: faker.database.mongodbObjectId(),
+      productName: seed.productName,
+      price: seed.price,
+      quantityAvailable: faker.number.int({ min: 0, max: 25 }),
+      category: seed.category,
+      sellerId: faker.helpers.arrayElements(
+        randomSellers(),
+        faker.number.int({ min: 1, max: 10 })
+      ),
+    };
+    products.push(product);
+  }
+  return products;
+};
+
+const Products = randomProducts();
+////////////////////////////////////////////////////////////////////////////////
+
+const randomCustomers = () => {
+  const customers = [];
+  for (let i = 0; i < 2000; i++) {
+    const sex = faker.person.sexType();
+    const firstName = faker.person.firstName(sex);
+    const lastName = faker.person.lastName();
+    const address = faker.location.streetAddress({ useFullAddress: true });
+    const city = faker.location.city();
+    const country = faker.location.country();
+    const email = faker.internet.email({
+      firstName,
+      lastName,
+      provider: "42.dev",
+    });
+    const customer = {
+      customerId: faker.database.mongodbObjectId(),
+      firstName,
+      lastName,
+      email,
+      shippingAdress: `${address} ${city} ${country}`,
+      billingAddress: `${address} ${city} ${country}`,
+    };
+    customers.push(customer);
+  }
+  return customers;
+};
+
+const Customers = randomCustomers();
+////////////////////////////////////////////////////////////////////////////////
+
+const randomOrders = () => {
+  const orders = [];
+  const start = dayjs.utc().subtract(1, "year").startOf("day");
+  const end = dayjs.utc().startOf("day");
+  let currentDate = start.clone();
+
+  while (currentDate.isBefore(end)) {
+    const numberOfOrders = faker.number.int({ min: 0, max: 10 });
+    for (let i = 0; i <= numberOfOrders; i++) {
+      const products = faker.helpers.arrayElements(Products, {
+        min: 1,
+        max: faker.number.int({ min: 1, max: 3 }),
+      });
+      const items = products.map((product) => {
+        const quantity = faker.number.int({
+          min: 1,
+          max: product.price > 100 ? 1 : 2,
+        });
+        const item = {
+          productId: product.productId,
+          quantity: faker.number.int({
+            min: 1,
+            max: quantity,
+          }),
+          itemPrice: product.price.toFixed(2),
+        };
+        product.quantityAvailable -= item.quantity;
+        return item;
+      });
+      const totalAmount = items.reduce((acc, item) => {
+        acc += parseFloat(item.itemPrice) * item.quantity;
+        return acc;
+      }, 0);
+      const order = {
+        orderId: faker.database.mongodbObjectId(),
+        customer: faker.helpers.arrayElement(Customers).customerId,
+        status: faker.helpers.arrayElement([
+          "delivered",
+          "shipped",
+          "delivered",
+          "pending",
+          "delivered",
+        ]),
+        items: items,
+        totalAmount: totalAmount.toFixed(2),
+        orderDate: currentDate.toISOString(),
+      };
+      orders.push(order);
+    }
+    currentDate = currentDate.add(1, "day");
+  }
+  return orders;
+};
+
+const Orders = randomOrders();
+////////////////////////////////////////////////////////////////////////////////
+
+const randomPayments = () => {
+  const payments: Array<Object> = [];
+
+  Orders.forEach((order) => {
+    const shippingPrice = parseFloat(
+      faker.helpers.arrayElement(["5.99", "8.99", "14.99", "19.99", "39.99"])
+    );
+    const payment = {
+      paymentId: faker.database.mongodbObjectId(),
+      orderId: order.orderId,
+      paymentDate: order.orderDate,
+      paymentAmount: (parseFloat(order.totalAmount) + shippingPrice).toFixed(2),
+      paymentMethod: faker.helpers.arrayElement([
+        "credit card",
+        "paypal",
+        "credit card",
+        "google pay",
+        "credit card",
+        "apple pay",
+      ]),
+    };
+    payments.push(payment);
+  });
+  return payments;
+};
+
+const Payments = randomPayments();
+////////////////////////////////////////////////////////////////////////////////
+/*
+
+6. **Review:**
+   - `reviewId`: Unique identifier for the review.
+   - `productId`: Reference to the reviewed product.
+   - `customerId`: Reference to the customer who wrote the review.
+   - `rating`: Rating given by the customer (e.g., 1 to 5 stars).
+   - `comment`: Customer's written review or feedback.
+
+ */
+
+/** DASHBOARD RECORDS
+
+1. **Financial Record:**
+   - `recordId`: Unique identifier for the financial record.
+   - `date`: Date of the financial transaction or record.
+   - `transactionType`: Type of transaction (revenue, expense, profit, etc.).
+   - `amount`: Monetary amount associated with the transaction.
+   - `description`: Description or details of the transaction.
+
+2. **Revenue:**
+   - `revenueId`: Unique identifier for the revenue entry.
+   - `orderId`: Reference to the order generating the revenue.
+   - `amount`: Amount of revenue generated from the order.
+   - `date`: Date when the revenue was earned.
+
+3. **Expenses:**
+   - `expenseId`: Unique identifier for the expense entry.
+   - `category`: Category of the expense (e.g., shipping, marketing, operations).
+   - `amount`: Amount of the expense.
+   - `date`: Date when the expense occurred.
+
+4. **Profit:**
+   - `profitId`: Unique identifier for the profit entry.
+   - `orderId`: Reference to the order generating the profit.
+   - `revenueAmount`: Amount of revenue from the order.
+   - `expensesAmount`: Total expenses associated with the order.
+   - `profitAmount`: Calculated profit (revenue - expenses).
+   - `date`: Date when the profit was calculated.
+
+5. **Shipping Cost:**
+   - `shippingCostId`: Unique identifier for the shipping cost entry.
+   - `orderId`: Reference to the order for which shipping cost applies.
+   - `amount`: Amount of the shipping cost.
+   - `date`: Date when the shipping cost was incurred.
+
+6. **Taxes:**
+   - `taxId`: Unique identifier for the tax entry.
+   - `orderId`: Reference to the order for which taxes apply.
+   - `taxType`: Type of tax (e.g., sales tax, VAT).
+   - `amount`: Amount of the tax.
+   - `date`: Date when the tax was calculated.
+
+7. **Financial Summary:**
+   - `summaryId`: Unique identifier for the financial summary.
+   - `dateRange`: Range of dates covered by the summary.
+   - `totalRevenue`: Total revenue earned within the date range.
+   - `totalExpenses`: Total expenses incurred within the date range.
+   - `netProfit`: Net profit (total revenue - total expenses) within the date range.
+   - `averageProfitMargin`: Average profit margin calculated as (net profit / total revenue).
+
+ */

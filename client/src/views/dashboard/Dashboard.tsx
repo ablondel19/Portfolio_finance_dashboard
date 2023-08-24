@@ -8,7 +8,7 @@ import RevenueAndExpenses from "@/components/boxes/row1/RevenueAndExpenses";
 import ResizableBox from "@/components/utils/ResizableBox";
 import { styled } from "@mui/system";
 import ProfitAndRevenueLineChart from "@/components/boxes/row1/ProfitAndRevenue";
-import Percentages from "@/components/boxes/row2/Percentages";
+import ExpenseByCategory from "@/components/boxes/row2/ExpensesByCategory";
 import MonthlyRevenueBarChart from "@/components/boxes/row2/MonthlyRevenue";
 import Averages from "@/components/boxes/row2/Averages";
 import ProfitPrediction from "@/components/boxes/row3/ProfitPrediction";
@@ -64,7 +64,7 @@ const Dashboard = () => {
     a: <RevenueAndExpenses gridArea="a" />,
     b: <ProfitAndRevenueLineChart gridArea="b" />,
     c: <ExpensesLineChart gridArea="c" />,
-    d: <Percentages gridArea="d" />,
+    d: <ExpenseByCategory gridArea="d" />,
     e: <MonthlyRevenueBarChart gridArea="e" />,
     f: <Averages gridArea="f" />,
     g: <RevenuePrediction gridArea="g" />,

@@ -19,11 +19,11 @@ import { ScaleAnimation } from "@/views/dashboard/Dashboard";
 dayjs.extend(utc);
 
 const titles = {
-  a: "Revenue and expenses",
-  b: "Profit and revenue",
-  c: "Expenses",
-  d: "Percentages",
-  e: "Overview",
+  a: "Revenue and Expenses",
+  b: "Profit and Revenue",
+  c: "OpEx and Non-OpEx",
+  d: "Expenses by category",
+  e: "Profit Revenue and Expenses ",
   f: "Averages",
   g: "Revenue prediction",
   h: "Profit prediction",
@@ -55,21 +55,20 @@ const ResizableBox: React.FC<ResizableBoxProps> = ({
   let resizeTimeout: number;
   const [isResizing, setIsResizing] = useState(false);
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
-  const [startDate, setStartDate] = useState(new Date(Date.UTC(2023, 0, 1)));
+  const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [endDateJs, setEndDateJs] = useState(
-    dayjs.utc().subtract(1, "month").endOf("month")
-  );
+
+  const [endDateJs, setEndDateJs] = useState(dayjs.utc().subtract(1, "month"));
   const [startDateJs, setStartDateJs] = useState(
-    endDateJs.subtract(1, "year").subtract(2, "month")
+    endDateJs.subtract(1, "year").subtract(1, "month")
   );
 
   const handleChange = ([newStartDate, newEndDate]) => {
     setStartDate(newStartDate);
     setEndDate(newEndDate);
     if (newStartDate && newEndDate) {
-      setStartDateJs(dayjs(newStartDate.toString()));
-      setEndDateJs(dayjs(newEndDate.toString()));
+      setStartDateJs(dayjs.utc(newStartDate.toString()));
+      setEndDateJs(dayjs.utc(newEndDate.toString()));
       toggleDatePicker();
     }
   };
@@ -151,7 +150,7 @@ const ResizableBox: React.FC<ResizableBoxProps> = ({
             alignItems="center"
           >
             <DatePicker
-              locale="enGB"
+              // locale="enGB"
               onChange={handleChange}
               selectsRange
               startDate={startDate}
