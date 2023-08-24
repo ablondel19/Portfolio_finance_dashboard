@@ -6,10 +6,17 @@ import BoxHeader from "./BoxHeader";
 import { MenuIconButton } from "../buttons/MenuIconButton";
 import { ExpandIconButton } from "../buttons/ExpandIconButton";
 import { CalendarIconButton } from "../buttons/CalendarIconButton";
+import { registerLocale, setDefaultLocale } from "react-datepicker";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./DatePicker.css";
 import React from "react";
+import enGB from "date-fns/locale/en-GB";
+import dayjs, { Dayjs } from "dayjs";
+import utc from "dayjs/plugin/utc.js";
+import { addMonths } from "date-fns";
+import { ScaleAnimation } from "@/views/dashboard/Dashboard";
+dayjs.extend(utc);
 
 const titles = {
   a: "Revenue and expenses",
@@ -43,16 +50,28 @@ const ResizableBox: React.FC<ResizableBoxProps> = ({
   gridArea,
   isAboveMediumScreens,
 }) => {
+  registerLocale("enGB", enGB);
+  setDefaultLocale("enGB");
   let resizeTimeout: number;
   const [isResizing, setIsResizing] = useState(false);
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
-  const [startDate, setStartDate] = useState(null);
+  const [startDate, setStartDate] = useState(new Date(Date.UTC(2023, 0, 1)));
   const [endDate, setEndDate] = useState(null);
+  const [endDateJs, setEndDateJs] = useState(
+    dayjs.utc().subtract(1, "month").endOf("month")
+  );
+  const [startDateJs, setStartDateJs] = useState(
+    endDateJs.subtract(1, "year").subtract(2, "month")
+  );
 
   const handleChange = ([newStartDate, newEndDate]) => {
     setStartDate(newStartDate);
     setEndDate(newEndDate);
-    if (newStartDate && newEndDate) toggleDatePicker();
+    if (newStartDate && newEndDate) {
+      setStartDateJs(dayjs(newStartDate.toString()));
+      setEndDateJs(dayjs(newEndDate.toString()));
+      toggleDatePicker();
+    }
   };
 
   const toggleDatePicker = () => {
@@ -82,8 +101,8 @@ const ResizableBox: React.FC<ResizableBoxProps> = ({
 
   type ChildProps = {
     gridArea: string;
-    startDate: Date;
-    endDate: Date | null;
+    startDate: Dayjs;
+    endDate: Dayjs;
   };
 
   const modifiedChildren = React.Children.map(children, (child) => {
@@ -91,8 +110,8 @@ const ResizableBox: React.FC<ResizableBoxProps> = ({
       if (child.props.gridArea === gridArea) {
         return React.cloneElement(child, {
           gridArea: gridArea,
-          startDate: startDate,
-          endDate: endDate,
+          startDate: startDateJs,
+          endDate: endDateJs,
         });
       }
     }
@@ -124,23 +143,29 @@ const ResizableBox: React.FC<ResizableBoxProps> = ({
         </Box>
       </Box>
       {isDatePickerVisible ? (
-        <Box
-          maxHeight="15rem"
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <DatePicker
-            onChange={handleChange}
-            selectsRange
-            startDate={startDate}
-            endDate={endDate}
-            dateFormat="MM/yyyy"
-            showMonthYearPicker
-            shouldCloseOnSelect={true}
-            inline
-          />
-        </Box>
+        <ScaleAnimation>
+          <Box
+            maxHeight="15rem"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <DatePicker
+              locale="enGB"
+              onChange={handleChange}
+              selectsRange
+              startDate={startDate}
+              minDate={new Date("2021-01-01")}
+              maxDate={addMonths(new Date(), -1)}
+              endDate={endDate}
+              dateFormat="MM/yyyy"
+              showMonthYearPicker
+              shouldCloseOnSelect={true}
+              showDisabledMonthNavigation
+              inline
+            />
+          </Box>
+        </ScaleAnimation>
       ) : (
         <>{isResizing ? <Spinner /> : modifiedChildren}</>
       )}

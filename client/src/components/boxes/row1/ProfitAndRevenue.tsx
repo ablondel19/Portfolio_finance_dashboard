@@ -12,29 +12,30 @@ import {
 } from "recharts";
 import Spinner from "../../utils/Spinner";
 import { ChartMargin, ChartProps } from "../../utils/utils";
+import { formatDataWithConfig } from "@/components/utils/dataTransform/dataFormatting";
 
-const ProfitAndRevenueLineChart: React.FC<ChartProps> = () => {
+const ProfitAndRevenueLineChart: React.FC<ChartProps> = ({
+  gridArea = "b",
+  startDate,
+  endDate,
+}) => {
   const { palette } = useTheme();
   const { data, isLoading } = useGetKpisQuery();
 
   const revenueAndProfit = useMemo(() => {
-    return (
-      data !== undefined &&
-      data[0].monthlyData.map(({ month, revenue, expenses }) => {
-        return {
-          name: month.substring(0, 3),
-          revenue: revenue,
-          profit: (revenue - expenses).toFixed(2),
-        };
-      })
-    );
-  }, [data]);
+    if (!isLoading) {
+      return formatDataWithConfig({
+        data: data[0].monthlyData,
+        isLoading: isLoading,
+        startDate: startDate,
+        endDate: endDate,
+        valuesToExtract: ["revenue", "profit"],
+        fieldMappings: {},
+      });
+    }
+  }, [data, startDate, endDate]);
 
   if (isLoading) return <Spinner />;
-  const minLeft = data[0].ranges.profit.min;
-  const maxLeft = data[0].ranges.profit.max;
-  const minRight = data[0].ranges.revenue.min;
-  const maxRight = data[0].ranges.revenue.max;
 
   return (
     <ResponsiveContainer width="99%" height="65%" debounce={1250}>
@@ -72,14 +73,14 @@ const ProfitAndRevenueLineChart: React.FC<ChartProps> = () => {
           tickLine={true}
           axisLine={true}
           style={{ fontSize: ".6em" }}
-          domain={[minLeft, maxLeft]}
+          domain={[data[0].ranges.profit.min, data[0].ranges.profit.max]}
         />
         <YAxis
           yAxisId="right"
           orientation="right"
           tickLine={true}
           axisLine={true}
-          domain={[minRight, maxRight]}
+          domain={[data[0].ranges.revenue.min, data[0].ranges.revenue.max]}
           style={{ fontSize: ".6em" }}
         />
         <Tooltip

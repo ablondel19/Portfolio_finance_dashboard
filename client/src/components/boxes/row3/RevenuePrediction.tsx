@@ -15,40 +15,66 @@ import regression, { DataPoint } from "regression";
 import Spinner from "../../utils/Spinner";
 import { floor, ceil } from "@/utils/utils";
 import { ChartProps } from "@/components/utils/utils";
+import { formatDataWithConfig } from "@/components/utils/dataTransform/dataFormatting";
 
-const RevenuePrediction: React.FC<ChartProps> = () => {
+const RevenuePrediction: React.FC<ChartProps> = ({
+  gridArea = "g",
+  startDate,
+  endDate,
+}) => {
   const { palette } = useTheme();
   const { data, isLoading } = useGetKpisQuery();
 
   const formattedData = useMemo(() => {
-    if (!data) return [];
-    const monthData = data[0].monthlyData;
-    const formatted: Array<DataPoint> = monthData.map(
-      ({ revenue }, index: number) => {
-        return [index, parseFloat(revenue.toString())];
-      }
-    );
-    const regressionLine = regression.linear(formatted);
-    return monthData.map(({ month, revenue }, index: number) => {
-      return {
-        name: month.substring(0, 3),
-        "Actual revenue": revenue,
-        "Regression line": regressionLine.points[index][1],
-        "Predicted revenue": regressionLine.predict(index + 12)[1],
-      };
-    });
-  }, [data]);
+    if (!isLoading) {
+      const formattedData = formatDataWithConfig({
+        data: data[0].monthlyData,
+        isLoading: isLoading,
+        startDate: startDate,
+        endDate: endDate,
+        valuesToExtract: ["revenue"],
+        fieldMappings: {},
+      });
+      const line: Array<DataPoint> = formattedData.map(
+        (data: { name: string; revenue: string }, index: number) => {
+          return [index, parseFloat(data.revenue.toString())];
+        }
+      );
+      const regressionLine = regression.linear(line);
+      const future =
+        (endDate.get("year") - startDate.get("year")) * 12 +
+        endDate.get("month") +
+        1 -
+        startDate.get("month");
+      const finalData = formattedData.map(
+        (
+          { name, revenue }: { name: string; revenue: string },
+          index: number
+        ) => {
+          return {
+            name: name.substring(0, 3),
+            "Actual revenue": revenue,
+            "Regression line": regressionLine.points[index][1],
+            "Predicted revenue": regressionLine.predict(index + future)[1],
+          };
+        }
+      );
+      return finalData;
+    }
+  }, [data, startDate, endDate]);
+
+  if (isLoading) return <Spinner />;
 
   const ranges = formattedData.reduce(
     (acc, data) => {
-      if (data["Actual revenue"] <= acc.min)
-        acc.min = floor(data["Actual revenue"]);
+      if (parseFloat(data["Actual revenue"]) <= acc.min)
+        acc.min = floor(parseFloat(data["Actual revenue"]));
       if (data["Regression line"] <= acc.min)
         acc.min = floor(data["Regression line"]);
       if (data["Predicted revenue"] <= acc.min)
         acc.min = floor(data["Predicted revenue"]);
-      if (data["Actual revenue"] >= acc.max)
-        acc.max = ceil(data["Actual revenue"]);
+      if (parseFloat(data["Actual revenue"]) >= acc.max)
+        acc.max = ceil(parseFloat(data["Actual revenue"]));
       if (data["Regression line"] >= acc.max)
         acc.max = ceil(data["Regression line"]);
       if (data["Predicted revenue"] >= acc.max)
@@ -57,8 +83,6 @@ const RevenuePrediction: React.FC<ChartProps> = () => {
     },
     { min: Infinity, max: -Infinity }
   );
-
-  if (isLoading) return <Spinner />;
 
   return (
     <ResponsiveContainer width="99%" height="65%" debounce={1250}>

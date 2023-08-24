@@ -4,6 +4,7 @@ import { Currency } from "../utils/utils.ts";
 const monthlyDataSchema = new mongoose.Schema(
   {
     month: String,
+    date: String,
     revenue: Currency,
     profit: Currency,
     expenses: Currency,
@@ -29,13 +30,11 @@ const dailyDataSchema = new mongoose.Schema(
 
 const kpiSchema = new mongoose.Schema(
   {
-    totalProfit: Currency,
-    totalRevenue: Currency,
-    totalExpenses: Currency,
-    expensesByCategory: {
-      type: Map,
-      of: Currency,
-    },
+    profit: Currency,
+    revenue: Currency,
+    expenses: Currency,
+    operationalExpenses: Currency,
+    nonOperationalExpenses: Currency,
     monthlyData: [monthlyDataSchema],
     dailyData: [dailyDataSchema],
     ranges: {

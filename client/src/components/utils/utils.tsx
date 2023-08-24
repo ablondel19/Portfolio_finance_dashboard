@@ -1,7 +1,10 @@
+import { Dayjs } from "dayjs";
+
 export type ChartProps = {
   gridArea?: string;
-  startDate?: Date;
-  endDate?: Date;
+  startDate?: Dayjs;
+  endDate?: Dayjs;
+  resolution?: string; // 'month' | 'week' | 'day' => not implemented yet
 };
 
 export const ChartMargin = {

@@ -12,25 +12,31 @@ import {
 } from "recharts";
 import Spinner from "../../utils/Spinner";
 import { ChartMargin, ChartProps } from "../../utils/utils";
+import { formatDataWithConfig } from "@/components/utils/dataTransform/dataFormatting";
 
-const ExpensesLineChart: React.FC<ChartProps> = () => {
+const ExpensesLineChart: React.FC<ChartProps> = ({
+  gridArea = "c",
+  startDate,
+  endDate,
+}) => {
   const { palette } = useTheme();
   const { data, isLoading } = useGetKpisQuery();
 
   const operationalExpenses = useMemo(() => {
-    return (
-      data !== undefined &&
-      data[0].monthlyData.map(
-        ({ month, nonOperationalExpenses, operationalExpenses }) => {
-          return {
-            name: month.substring(0, 3),
-            "Non operational expenses": nonOperationalExpenses,
-            "Operational expenses": operationalExpenses,
-          };
-        }
-      )
-    );
-  }, [data]);
+    if (!isLoading) {
+      return formatDataWithConfig({
+        data: data[0].monthlyData,
+        isLoading: isLoading,
+        startDate: startDate,
+        endDate: endDate,
+        valuesToExtract: ["nonOperationalExpenses", "operationalExpenses"],
+        fieldMappings: {
+          nonOperationalExpenses: "Non operational expenses",
+          operationalExpenses: "Operational expenses",
+        },
+      });
+    }
+  }, [data, startDate, endDate]);
 
   if (isLoading) return <Spinner />;
   const minLeft = data[0].ranges.nonOpExp.min;

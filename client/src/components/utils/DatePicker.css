@@ -95,3 +95,11 @@
   background-color: #8f929b;
   color: #e1e2e7;
 }
+
+.react-datepicker__day--disabled,
+.react-datepicker__month-text--disabled,
+.react-datepicker__quarter-text--disabled,
+.react-datepicker__year-text--disabled {
+  background-color: #8f929b;
+  opacity: 0.2;
+}

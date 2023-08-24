@@ -12,26 +12,31 @@ import {
 } from "recharts";
 import Spinner from "../../utils/Spinner";
 import { ChartMargin, ChartProps } from "../../utils/utils";
+import dayjs from "dayjs";
+import { formatDataWithConfig } from "@/components/utils/dataTransform/dataFormatting";
 
-const RevenueAndExpenses: React.FC<ChartProps> = () => {
+const RevenueAndExpenses: React.FC<ChartProps> = ({
+  gridArea = "a",
+  startDate,
+  endDate,
+}) => {
   const { palette } = useTheme();
   const { data, isLoading } = useGetKpisQuery();
 
   const revenueAndExpenses = useMemo(() => {
-    return (
-      data !== undefined &&
-      data[0].monthlyData.map(({ month, revenue, expenses }) => {
-        return {
-          name: month.substring(0, 3),
-          revenue: revenue,
-          expenses: expenses,
-        };
-      })
-    );
-  }, [data]);
+    if (!isLoading) {
+      return formatDataWithConfig({
+        data: data[0].monthlyData,
+        isLoading: isLoading,
+        startDate: startDate,
+        endDate: endDate,
+        valuesToExtract: ["revenue", "expenses"],
+        fieldMappings: {},
+      });
+    }
+  }, [data, startDate, endDate]);
 
   if (isLoading) return <Spinner />;
-  const { ranges } = data[0];
 
   return (
     <ResponsiveContainer width="100%" height="65%" debounce={1250}>
@@ -63,14 +68,14 @@ const RevenueAndExpenses: React.FC<ChartProps> = () => {
           </linearGradient>
         </defs>
         <CartesianGrid vertical={false} stroke={palette.grey[800]} />
-        <XAxis dataKey="name" tickLine={false} style={{ fontSize: ".7em" }} />
+        <XAxis dataKey="name" tickLine={true} style={{ fontSize: ".7em" }} />
         <YAxis
           yAxisId="left"
           orientation="left"
           axisLine={true}
           tickLine={true}
           style={{ fontSize: ".6em" }}
-          domain={[ranges.revenue.min, ranges.revenue.max]}
+          domain={[data[0].ranges.revenue.min, data[0].ranges.revenue.max]}
         />
         <YAxis
           yAxisId="right"
@@ -78,7 +83,7 @@ const RevenueAndExpenses: React.FC<ChartProps> = () => {
           axisLine={true}
           tickLine={true}
           style={{ fontSize: ".6em" }}
-          domain={[ranges.expenses.min, ranges.expenses.max]}
+          domain={[data[0].ranges.expenses.min, data[0].ranges.expenses.max]}
         />
         <Tooltip
           offset={50}
@@ -93,7 +98,6 @@ const RevenueAndExpenses: React.FC<ChartProps> = () => {
           type="monotone"
           dataKey="revenue"
           stroke={palette.primary.main}
-          // dot={CustomDot}
           fill="url(#color1)"
         />
         <Area
@@ -101,7 +105,6 @@ const RevenueAndExpenses: React.FC<ChartProps> = () => {
           type="monotone"
           dataKey="expenses"
           stroke={palette.tertiary[500]}
-          // dot={CustomDot}
           fill="url(#color2)"
         />
       </AreaChart>

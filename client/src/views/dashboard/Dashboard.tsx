@@ -40,7 +40,7 @@ const gridTemplateSmallScreens = `
   "i"
 `;
 
-const MyKeyframesAnimation = styled("div")(() => ({
+export const ScaleAnimation = styled("div")(() => ({
   "@keyframes myAnimation": {
     "0%": {
       opacity: 0.75,
@@ -88,7 +88,7 @@ const Dashboard = () => {
           gridTemplateAreas: gridTemplateAreas,
         }}
       >
-        <MyKeyframesAnimation>
+        <ScaleAnimation>
           {selectedGridArea && (
             <ResizableBox
               gridArea={selectedGridArea}
@@ -97,7 +97,7 @@ const Dashboard = () => {
               {components[selectedGridArea]}
             </ResizableBox>
           )}
-        </MyKeyframesAnimation>
+        </ScaleAnimation>
       </Box>
     );
   }

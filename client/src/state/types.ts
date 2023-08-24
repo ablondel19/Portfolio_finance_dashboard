@@ -1,3 +1,5 @@
+import { Dayjs } from "dayjs";
+
 export interface ExpensesByCategory {
   salaries: number;
   supplies: number;
@@ -7,7 +9,9 @@ export interface ExpensesByCategory {
 export interface Month {
   id: string;
   _id: string;
+  date: string;
   month: string;
+  year: string;
   revenue: number;
   expenses: number;
   profit: number;
@@ -18,6 +22,17 @@ export interface Month {
   marketing: number;
   events: number;
   other: number;
+}
+
+export interface FormatConfig {
+  data: Array<Month>;
+  isLoading: boolean;
+  startDate: Dayjs;
+  endDate: Dayjs;
+  valuesToExtract: Array<string>;
+  fieldMappings: {
+    [key: string]: string;
+  };
 }
 
 export interface Day {
@@ -40,10 +55,11 @@ export interface GetKpisResponse {
   id: string;
   _id: string;
   __v: number;
-  totalProfit: number;
-  totalRevenue: number;
-  totalExpenses: number;
-  expensesByCategory: ExpensesByCategory;
+  profit: number;
+  revenue: number;
+  expenses: number;
+  nonOperationalExpenses: number;
+  operationalExpenses: number;
   monthlyData: Array<Month>;
   dailyData: Array<Day>;
   ranges: ranges;

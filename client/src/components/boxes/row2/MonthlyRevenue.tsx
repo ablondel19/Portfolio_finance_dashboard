@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import Spinner from "../../utils/Spinner";
 import { ChartMargin, ChartProps } from "../../utils/utils";
+import { formatDataWithConfig } from "@/components/utils/dataTransform/dataFormatting";
 
 const CustomTooltip = ({ active, payload, label, name }) => {
   const { palette } = useTheme();
@@ -43,23 +44,26 @@ const CustomTooltip = ({ active, payload, label, name }) => {
   return null;
 };
 
-const MonthlyRevenueBarChart: React.FC<ChartProps> = () => {
+const MonthlyRevenueBarChart: React.FC<ChartProps> = ({
+  gridArea = "e",
+  startDate,
+  endDate,
+}) => {
   const { palette } = useTheme();
   const { data, isLoading } = useGetKpisQuery();
 
   const barData = useMemo(() => {
-    return (
-      data !== undefined &&
-      data[0].monthlyData.map(({ month, revenue, profit, expenses }) => {
-        return {
-          name: month.substring(0, 3),
-          revenue: revenue,
-          profit: profit,
-          expenses: expenses,
-        };
-      })
-    );
-  }, [data]);
+    if (!isLoading) {
+      return formatDataWithConfig({
+        data: data[0].monthlyData,
+        isLoading: isLoading,
+        startDate: startDate,
+        endDate: endDate,
+        valuesToExtract: ["revenue", "expenses", "profit"],
+        fieldMappings: {},
+      });
+    }
+  }, [data, startDate, endDate]);
 
   if (isLoading) return <Spinner />;
   const { ranges } = data[0];
@@ -93,7 +97,7 @@ const MonthlyRevenueBarChart: React.FC<ChartProps> = () => {
             <stop
               offset="95%"
               stopColor={palette.primary[500]}
-              stopOpacity={0.2}
+              stopOpacity={0.3}
             />
           </linearGradient>
           <linearGradient id="colorExpenses" x1="0" y1="0" x2="0" y2="1">
@@ -105,7 +109,7 @@ const MonthlyRevenueBarChart: React.FC<ChartProps> = () => {
             <stop
               offset="95%"
               stopColor={palette.tertiary[500]}
-              stopOpacity={0.2}
+              stopOpacity={0.3}
             />
           </linearGradient>
           <linearGradient id="colorProfit" x1="0" y1="0" x2="0" y2="1">
@@ -117,7 +121,7 @@ const MonthlyRevenueBarChart: React.FC<ChartProps> = () => {
             <stop
               offset="95%"
               stopColor={palette.secondary[500]}
-              stopOpacity={0.2}
+              stopOpacity={0.3}
             />
           </linearGradient>
         </defs>

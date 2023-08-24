@@ -1,45 +1,25 @@
 import { faker } from "@faker-js/faker";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc.js";
+dayjs.extend(utc);
 
-const genUser = (role: string) => {
-  const genFirstName = faker.person.firstName();
-  const genLastName = faker.person.lastName();
-  const genEmail = faker.internet.email({
-    firstName: genFirstName,
-    lastName: genLastName,
-    provider: "42.dev",
-  });
-  return {
-    firstName: genFirstName,
-    lastName: genLastName,
-    email: genEmail,
-    role: role,
-  };
-};
-
-const today = new Date("2022-01-01");
-const lastYear = new Date(
-  today.getFullYear() - 1,
-  today.getMonth(),
-  today.getDate()
-);
+const start = dayjs.utc("2021-01-01");
+const end = dayjs.utc().subtract(1, "month").endOf("month");
 
 const genDailyData = () => {
-  const start = new Date(lastYear);
-  const end = new Date("2022-12-31");
   const dailyData = [];
-  let i = 0;
+  let currentDate = start.clone();
 
-  while (start <= end) {
-    const date = start.toISOString().split("T")[0];
+  while (currentDate.isBefore(end)) {
+    const date = currentDate.toISOString();
     const revenue = `$${parseFloat(
-      faker.commerce.price({ min: 150 + i, max: 750 + i })
+      faker.commerce.price({ min: 150, max: 750 })
     )}`;
     const expenses = `$${parseFloat(
-      faker.commerce.price({ min: 150 + i, max: 350 + i })
+      faker.commerce.price({ min: 150, max: 350 })
     )}`;
     dailyData.push({ date, revenue, expenses });
-    start.setDate(start.getDate() + 1);
-    // i++;
+    currentDate = currentDate.add(1, "day");
   }
   return dailyData;
 };
@@ -63,19 +43,32 @@ const months = [
 
 const monthlyData = [];
 
-for (let year = lastYear.getFullYear(); year <= today.getFullYear(); year++) {
-  const startMonth = year === lastYear.getFullYear() ? lastYear.getMonth() : 0;
-  const endMonth = year === today.getFullYear() ? today.getMonth() : 11;
+for (let year = start.year(); year <= end.year(); year++) {
+  const startMonth = year === start.year() ? start.month() : 0;
+  const endMonth = year === end.year() ? end.month() : 11;
 
   for (let monthIndex = startMonth; monthIndex <= endMonth; monthIndex++) {
     const monthName = months[monthIndex];
-    const monthStartDate = new Date(year, monthIndex, 1);
-    const monthEndDate = new Date(year, monthIndex + 1, 0);
+    const monthStartDate = dayjs()
+      .year(year)
+      .month(monthIndex)
+      .date(1)
+      .startOf("day");
+    const monthEndDate = dayjs()
+      .year(year)
+      .month(monthIndex)
+      .endOf("month")
+      .endOf("day");
 
     const monthlyRevenueAndExpenses = generatedDailyData
       .filter(({ date }) => {
-        const currentDate = new Date(date);
-        return currentDate >= monthStartDate && currentDate <= monthEndDate;
+        const currentDate = dayjs(date);
+        return (
+          (currentDate.isAfter(monthStartDate, "day") ||
+            currentDate.isSame(monthStartDate, "day")) &&
+          (currentDate.isBefore(monthEndDate, "day") ||
+            currentDate.isSame(monthEndDate, "day"))
+        );
       })
       .reduce(
         (acc, data) => {
@@ -85,6 +78,7 @@ for (let year = lastYear.getFullYear(); year <= today.getFullYear(); year++) {
         },
         { revenue: 0, expenses: 0 }
       );
+
     let r1 = "";
     let r2 = "";
 
@@ -101,6 +95,7 @@ for (let year = lastYear.getFullYear(); year <= today.getFullYear(); year++) {
     }
 
     monthlyData.push({
+      date: monthStartDate.format(),
       month: monthName,
       year: year.toString(),
       revenue: `$${monthlyRevenueAndExpenses.revenue.toFixed(2)}`,
