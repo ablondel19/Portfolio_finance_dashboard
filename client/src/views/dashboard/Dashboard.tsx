@@ -4,17 +4,17 @@ import Row2 from "./Row2";
 import Row3 from "./Row3";
 import { LayoutState } from "@/main";
 import { useSelector } from "react-redux";
-import RevenueAndExpenses from "@/components/boxes/row1/RevenueAndExpenses";
+import RevenueAndExpenses from "@/components/dashboardBoxes/row1/RevenueAndExpenses";
 import ResizableBox from "@/components/utils/ResizableBox";
 import { styled } from "@mui/system";
-import ProfitAndRevenueLineChart from "@/components/boxes/row1/ProfitAndRevenue";
-import ExpenseByCategory from "@/components/boxes/row2/ExpensesByCategory";
-import MonthlyRevenueBarChart from "@/components/boxes/row2/MonthlyRevenue";
-import Averages from "@/components/boxes/row2/Averages";
-import ProfitPrediction from "@/components/boxes/row3/ProfitPrediction";
-import RevenuePrediction from "@/components/boxes/row3/RevenuePrediction";
-import ExpensePrediction from "@/components/boxes/row3/ExpensePrediction";
-import ExpensesLineChart from "@/components/boxes/row1/ExpensesLineChart";
+import ProfitAndRevenueLineChart from "@/components/dashboardBoxes/row1/ProfitAndRevenue";
+import ExpenseByCategory from "@/components/dashboardBoxes/row2/ExpensesByCategory";
+import MonthlyRevenueBarChart from "@/components/dashboardBoxes/row2/MonthlyRevenue";
+import Averages from "@/components/dashboardBoxes/row2/Averages";
+import ProfitPrediction from "@/components/dashboardBoxes/row3/ProfitPrediction";
+import RevenuePrediction from "@/components/dashboardBoxes/row3/RevenuePrediction";
+import ExpensePrediction from "@/components/dashboardBoxes/row3/ExpensePrediction";
+import ExpensesLineChart from "@/components/dashboardBoxes/row1/ExpensesLineChart";
 
 const gridTemplateLargeScreens = `
   "a b c"
@@ -105,6 +105,7 @@ const Dashboard = () => {
   return (
     <Box
       width="100%"
+      height="90%"
       display="grid"
       gap="1rem"
       sx={

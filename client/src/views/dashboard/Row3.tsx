@@ -1,7 +1,7 @@
 import ResizableBox from "@/components/utils/ResizableBox";
-import ExpensePrediction from "@/components/boxes/row3/ExpensePrediction";
-import ProfitPrediction from "@/components/boxes/row3/ProfitPrediction";
-import RevenuePrediction from "@/components/boxes/row3/RevenuePrediction";
+import ExpensePrediction from "@/components/dashboardBoxes/row3/ExpensePrediction";
+import ProfitPrediction from "@/components/dashboardBoxes/row3/ProfitPrediction";
+import RevenuePrediction from "@/components/dashboardBoxes/row3/RevenuePrediction";
 
 const Row3 = ({ isAboveMediumScreens }) => {
   return (

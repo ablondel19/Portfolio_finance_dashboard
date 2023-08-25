@@ -6,13 +6,18 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import cors from "cors";
 import kpiRoutes from "./routes/kpi.ts";
-import productsRoutes from "./routes/products.ts";
-import transactionsRoutes from "./routes/transactions.ts";
 import kpiModel from "./models/kpiModel.ts";
-import productModel from "./models/productModel.ts";
-import transactionModel from "./models/transactionModel.ts";
-import { products, transactions } from "./data/data.ts";
 import kpis from "./datagen.ts";
+// SALES //
+import { Customers } from "./models/customerModel.ts";
+import { Orders } from "./models/orderModel.ts";
+import { Payments } from "./models/paymentModel.ts";
+import { Products } from "./models/productModel.ts";
+import { Reviews } from "./models/reviewModel.ts";
+import { Sellers } from "./models/sellerModel.ts";
+import { Sales } from "./datagen.ts";
+
+import salesRouter from "./routes/salesRouter.ts";
 
 /* CONFIGURATION */
 dotenv.config();
@@ -27,8 +32,7 @@ app.use(cors({ origin: "http://localhost:5173" }));
 
 /* ROUTES */
 app.use("/kpi", kpiRoutes);
-app.use("/products", productsRoutes);
-app.use("/transactions", transactionsRoutes);
+app.use("/sales", salesRouter);
 
 /* MONGOOSE SETUP + SERVER START */
 const PORT = process.env.PORT || 3001;
@@ -36,12 +40,23 @@ const MONGO_URL = process.env.MONGO_URL || "";
 mongoose
   .connect(MONGO_URL)
   .then(async () => {
-    app.listen(PORT, () => console.log(`🚀 ~ App: Ready on port ${PORT}`));
-    // MOCK DATA INSERT => USE ONCE ONLY
-    // await productModel.insertMany(products);
-    // await transactionModel.insertMany(transactions);
-    await kpiModel.deleteMany({});
-    await kpiModel.insertMany(kpis);
+    // await kpiModel.deleteMany({});
+    // await kpiModel.insertMany(kpis);
+    // await Customers.deleteMany({});
+    // await Orders.deleteMany({});
+    // await Payments.deleteMany({});
+    // await Products.deleteMany({});
+    // await Reviews.deleteMany({});
+    // await Sellers.deleteMany({});
+    // await Customers.insertMany(Sales.Customers);
+    // await Orders.insertMany(Sales.Orders);
+    // await Payments.insertMany(Sales.Payments);
+    // await Products.insertMany(Sales.Products);
+    // await Reviews.insertMany(Sales.Reviews);
+    // await Sellers.insertMany(Sales.Sellers);
+    app.listen(PORT, () => {
+      console.log(`🚀 ~ App: Ready on http://localhost:${PORT}`);
+    });
   })
   .catch((error) => {
     console.log("~ Mongoose ~ error :", error);

@@ -282,10 +282,10 @@ const randomProducts = () => {
     const product = {
       productId: faker.database.mongodbObjectId(),
       productName: seed.productName,
-      price: seed.price,
+      price: seed.price.toFixed(2),
       quantityAvailable: faker.number.int({ min: 0, max: 25 }),
       category: seed.category,
-      sellerId: faker.helpers.arrayElements(
+      sellerIds: faker.helpers.arrayElements(
         randomSellers(),
         faker.number.int({ min: 1, max: 10 })
       ),
@@ -344,7 +344,7 @@ const randomOrders = () => {
       const items = products.map((product) => {
         const quantity = faker.number.int({
           min: 1,
-          max: product.price > 100 ? 1 : 2,
+          max: parseFloat(product.price) > 100 ? 1 : 2,
         });
         const item = {
           productId: product.productId,
@@ -352,9 +352,9 @@ const randomOrders = () => {
             min: 1,
             max: quantity,
           }),
-          itemPrice: product.price.toFixed(2),
+          itemPrice: product.price,
+          category: product.category,
         };
-        product.quantityAvailable -= item.quantity;
         return item;
       });
       const totalAmount = items.reduce((acc, item) => {
@@ -398,12 +398,12 @@ const randomPayments = () => {
       paymentDate: order.orderDate,
       paymentAmount: (parseFloat(order.totalAmount) + shippingPrice).toFixed(2),
       paymentMethod: faker.helpers.arrayElement([
-        "credit card",
+        "card",
         "paypal",
-        "credit card",
-        "google pay",
-        "credit card",
-        "apple pay",
+        "card",
+        "google",
+        "card",
+        "apple",
       ]),
     };
     payments.push(payment);
@@ -413,16 +413,38 @@ const randomPayments = () => {
 
 const Payments = randomPayments();
 ////////////////////////////////////////////////////////////////////////////////
-/*
 
-6. **Review:**
-   - `reviewId`: Unique identifier for the review.
-   - `productId`: Reference to the reviewed product.
-   - `customerId`: Reference to the customer who wrote the review.
-   - `rating`: Rating given by the customer (e.g., 1 to 5 stars).
-   - `comment`: Customer's written review or feedback.
+const randomReviews = () => {
+  const reviews: Array<Object> = [];
+  const orders = Orders.filter((order) => {
+    return order.status === "delivered";
+  });
+  orders.forEach((order) => {
+    const customerId = order.customer;
+    const product = faker.helpers.arrayElement(order.items);
+    const productId = product.productId;
+    const rating = faker.number.int({ min: 1, max: 5 });
+    const review = {
+      reviewId: faker.database.mongodbObjectId(),
+      customerId,
+      productId,
+      rating,
+    };
+    reviews.push(review);
+  });
+  return reviews;
+};
 
- */
+const Reviews = randomReviews();
+
+export const Sales = {
+  Sellers,
+  Products,
+  Customers,
+  Orders,
+  Reviews,
+  Payments,
+};
 
 /** DASHBOARD RECORDS
 

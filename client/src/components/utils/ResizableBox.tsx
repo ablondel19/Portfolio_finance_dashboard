@@ -28,9 +28,10 @@ const titles = {
   g: "Revenue prediction",
   h: "Profit prediction",
   i: "Expenses prediction",
+  j: "Category Distribution",
 };
 
-const DashboardBox = styled(Box)(({ theme }) => ({
+export const DashboardBox = styled(Box)(({ theme }) => ({
   width: "100%",
   height: "100%",
   backgroundColor: theme.palette.background.light,
@@ -40,9 +41,9 @@ const DashboardBox = styled(Box)(({ theme }) => ({
 }));
 
 interface ResizableBoxProps {
-  children: ReactNode;
-  gridArea: string;
-  isAboveMediumScreens: boolean;
+  children?: ReactNode;
+  gridArea?: string;
+  isAboveMediumScreens?: boolean;
 }
 
 const ResizableBox: React.FC<ResizableBoxProps> = ({

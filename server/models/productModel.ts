@@ -1,19 +1,21 @@
 import mongoose from "mongoose";
 import { Currency } from "../utils/utils.ts";
 
-const productSchema = new mongoose.Schema(
+const ProductSchema = new mongoose.Schema(
   {
+    productId: {
+      type: String,
+      index: true,
+    },
+    productName: String,
     price: Currency,
-    expense: Currency,
-    transactions: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Transaction",
-      },
-    ],
+    quantityAvailable: Number,
+    category: String,
+    sellerIds: Array<String>,
   },
   { timestamps: true, toJSON: { getters: true } }
 );
 
-const productModel = mongoose.model("product", productSchema);
-export default productModel;
+ProductSchema.index({ productId: 1 });
+
+export const Products = mongoose.model("products", ProductSchema);
